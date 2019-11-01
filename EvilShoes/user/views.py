@@ -7,6 +7,7 @@ import jwt
 from user.models import UserInfo, ReceiverInfo
 
 
+# 注册
 def register_view(request):
     if request.method != 'POST':
         result = {'code': 10100, 'error': 'Please us post'}
@@ -83,6 +84,7 @@ def register_view(request):
         return JsonResponse(result)
 
 
+# 登录
 def login_view(request):
     if request.method != 'POST':
         result = {'code': 10200, 'error': 'Please use post!'}
@@ -122,8 +124,10 @@ def login_view(request):
     return JsonResponse(result)
 
 
+# 用户中心
 @login_status_check
 def userInfo_view(request):
+    # 显示用户信心
     if request.method == 'GET':
         user = request.user
         user = UserInfo.objects.filter(username=user.username)[0]
@@ -134,7 +138,7 @@ def userInfo_view(request):
         data['telephone'] = user.telephone
         result = {'code': 200, 'data': data}
         return JsonResponse(result)
-
+    # 修改用户信息
     elif request.method == 'PUT':
         # 拿数据
         json_str = request.body
@@ -188,8 +192,10 @@ def userInfo_view(request):
             return JsonResponse(result)
 
 
+# 收货地址
 @login_status_check
 def receiver_view(request):
+    # 地址列表
     if request.method == 'GET':
         user = request.user
         all_address_info = ReceiverInfo.objects.filter(username=user.username)
@@ -204,8 +210,8 @@ def receiver_view(request):
             data.append(addr)
         result = {'code': 200, 'data': data}
         return JsonResponse(result)
-
-    elif request.method == 'PUT':
+    # 添加地址
+    elif request.method == 'POST':
         # 拿数据
         json_str = request.body
         if not json_str:
@@ -228,6 +234,68 @@ def receiver_view(request):
             return JsonResponse(result)
         if len(address) > 128:
             result = {'code': 10404, 'error': 'Length of address can not more than 128bit!'}
+            return JsonResponse(result)
+        if not receiver_phone:
+            result = {'code': 10405, 'error': 'Please enter receiver_phone!'}
+            return JsonResponse(result)
+        if len(receiver_phone) != 11:
+            result = {'code': 10406, 'error': 'Length of receiver_phone must be 11bit!'}
+            return JsonResponse(result)
+        # 创建数据
+        user = request.user
+        try:
+            ReceiverInfo.objects.create(receiver=receiver, address=address, receiver_phone=receiver_phone,
+                                        is_default=is_default, user=user.username)
+        except Exception as e:
+            print('create error!')
+            print(e)
+
+        result = {'code': 200, 'data': 'append successfully!'}
+        return JsonResponse(result)
+    # 修改默认地址
+    elif request.method == 'PUT':
+        json_str = request.body
+        if not json_str:
+            result = {'code': 10406, 'error': 'Please give me data!'}
+            return JsonResponse(result)
+        json_obj = json.loads(json_str.decode())
+        user = request.user
+        addr_id = json_obj['addr_id']
+        if not addr_id:
+            result = {'code': 10407, 'error': 'Please give me addr_id!'}
+            return JsonResponse(result)
+        try:
+            ReceiverInfo.objects.filter(user=user.username).update(is_default=False)
+            address = ReceiverInfo.objects.get(user=user.username, id=addr_id)
+            address.update(is_default=True)
+            result = {'code': 200, 'data': 'Modify successfully!'}
+            return JsonResponse(result)
+        except Exception as e:
+            print('get error!')
+            print(e)
+            result = {'code': 10408, 'error': 'address does not exists!'}
+            return JsonResponse(result)
+    # 删除地址
+    elif request.method == 'DELETE':
+        json_str = request.body
+        if not json_str:
+            result = {'code': 10409, 'error': 'Please give me data!'}
+            return JsonResponse(result)
+        json_obj = json.loads(json_str.decode())
+        user = request.user
+        addr_id = json_obj['addr_id']
+        if not addr_id:
+            result = {'code': 10410, 'error': 'Please give me addr_id!'}
+            return JsonResponse(result)
+        try:
+            address = ReceiverInfo.objects.get(user=user.username, id=addr_id)
+            address.delete()
+            result = {'code': 200, 'data': 'Delete successfully!'}
+            return JsonResponse(result)
+        except Exception as e:
+            print('get error!')
+            print(e)
+            result = {'code': 10411, 'error': 'address does not exists!'}
             return JsonResponse(result)
 
 
