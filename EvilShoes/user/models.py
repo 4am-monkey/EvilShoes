@@ -17,6 +17,8 @@ class UserInfo(models.Model):
 
     class Meta:
         db_table = 'user_info'
+        verbose_name = '用户信息'
+        verbose_name_plural = verbose_name
 
     def __str__(self):
         """
@@ -36,3 +38,5 @@ class ReceiverInfo(models.Model):
 
     class Meta:
         db_table = 'receiver_info'
+        verbose_name = '收件人信息'
+        verbose_name_plural = verbose_name

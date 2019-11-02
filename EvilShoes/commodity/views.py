@@ -8,7 +8,7 @@ from commodity.models import *
 def GoodsInfo(request):
     if request.method == 'GET':
         try:
-            goods = Commodity.objects.all()
+            goods = CommodityInfo.objects.all()
             a = []
             for good in goods:
                 b = {}
@@ -27,7 +27,7 @@ def GoodsInfo(request):
 def GoodsType(request):
     if request.method == 'GET':
         try:
-            gts = Classify.objects.all()
+            gts = CommodityClassify.objects.all()
             c = []
             for gt in gts:
                 d = {}
