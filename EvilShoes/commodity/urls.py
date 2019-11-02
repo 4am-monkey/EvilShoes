@@ -4,5 +4,5 @@ from commodity import views
 
 urlpatterns = [
     url(r'^$', views.GoodsInfo),
-    url(r'^/(?P<classifyid>\w+)$', views.GoodsType),
+    url(r'^(?P<classifyid>\w+)$', views.GoodsType),
 ]

@@ -18,6 +18,12 @@ class UserInfo(models.Model):
     class Meta:
         db_table = 'user_info'
 
+    def __str__(self):
+        """
+            定义每个数据对象的显示信息
+        """
+        return self.username
+
 
 # 收货人信息表
 class ReceiverInfo(models.Model):
@@ -26,6 +32,7 @@ class ReceiverInfo(models.Model):
     address = models.CharField(max_length=648, verbose_name='收货地址')
     receiver_phone = models.CharField(max_length=11, verbose_name='收货人电话')
     is_default = models.BooleanField(default=False, verbose_name='是否默认')
+    create_time = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
 
     class Meta:
         db_table = 'receiver_info'
