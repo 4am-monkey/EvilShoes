@@ -10,7 +10,7 @@ from user.models import UserInfo, ReceiverInfo
 # 注册
 def register_view(request):
     if request.method != 'POST':
-        result = {'code': 10100, 'error': 'Please us post'}
+        result = {'code': 10100, 'error': 'Please use post'}
         return JsonResponse(result)
 
     json_str = request.body
