@@ -20,7 +20,9 @@ def show_cart(request):
             c = {}
             c['id'] = cart_info.id
             c['name'] = cart_info.name
+            c['unit_price'] = cart_info.unit_price
             c['count'] = cart_info.count
+            c['total_price'] = cart_info.unit_price * cart_info.count
             data.append(c)
 
         result = {'code': 200, 'data': data}
