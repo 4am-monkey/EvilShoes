@@ -44,4 +44,4 @@ def GoodsType(request):
             return JsonResponse({'code': 200, 'data': c})
         except Exception as e:
             print(e)
-            return JsonResponse({'code': 20102, 'error': 'The force majeure cause error'})
+            return JsonResponse({'code': 20101, 'error': 'The force majeure cause error'})
