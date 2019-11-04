@@ -7,10 +7,44 @@ import jwt
 from user.models import UserInfo, ReceiverInfo
 
 
+# 检查登录状态
+def check_login_status(func):
+    def wrapper(request, *args, **kwargs):
+        token = request.META['HTTP_AUTHORIZATION']
+        if not token:
+            result = {'code': 10000, 'error': 'Please login!'}
+            return JsonResponse(result)
+        try:
+            res = jwt.decode(token, 123456)
+        except Exception as e:
+            print(e)
+            result = {'code': 10001, 'error': 'Please login!!'}
+            return JsonResponse(result)
+
+        username = res['username']
+        try:
+            user = UserInfo.objects.get(username=username)
+        except Exception as e:
+            print(e)
+            result = {'code': 10002, 'error': 'Please login!!!'}
+            return JsonResponse(result)
+        # 判断token创建时间【登录时间】
+        token_time = res['login_time']
+        user_login_time = int(user.login_time.timestamp())
+        if token_time != user_login_time:
+            # 已有其他客户端登录此账户
+            result = {'code': 10003, 'error': 'Other user is acitved, please login!!!!'}
+            return JsonResponse(result)
+        func(request, *args, **kwargs)
+        # return func(request, *args, **kwargs)
+
+    return wrapper
+
+
 # 注册
 def register_view(request):
     if request.method != 'POST':
-        result = {'code': 10100, 'error': 'Please us post'}
+        result = {'code': 10100, 'error': 'Please use post'}
         return JsonResponse(result)
 
     json_str = request.body
@@ -125,7 +159,7 @@ def login_view(request):
 
 
 # 用户中心
-@login_status_check
+@check_login_status
 def userInfo_view(request):
     # 显示用户信心
     if request.method == 'GET':
@@ -193,7 +227,7 @@ def userInfo_view(request):
 
 
 # 收货地址
-@login_status_check
+@check_login_status
 def receiver_view(request):
     # 地址列表
     if request.method == 'GET':
@@ -305,36 +339,3 @@ def make_token(username, create_datetime, expire=3600 * 24):
     now_t = int(create_datetime.timestamp())
     payload = {'username': username, 'exp': now_t + expire, 'login_time': now_t}
     return jwt.encode(payload, key, algorithm='HS256')
-
-
-def login_status_check(func):
-    def wrapper(request, *args, **kwargs):
-        token = request.META['HTTP_AUTHORIZATION']
-        if not token:
-            result = {'code': 10000, 'error': 'Please login!'}
-            return JsonResponse(result)
-        try:
-            res = jwt.decode(token, 123456)
-        except Exception as e:
-            print(e)
-            result = {'code': 10001, 'error': 'Please login!!'}
-            return JsonResponse(result)
-
-        username = res['username']
-        try:
-            user = UserInfo.objects.get(username=username)
-        except Exception as e:
-            print(e)
-            result = {'code': 10002, 'error': 'Please login!!!'}
-            return JsonResponse(result)
-        # 判断token创建时间【登录时间】
-        token_time = res['login_time']
-        user_login_time = int(user.login_time.timestamp())
-        if token_time != user_login_time:
-            # 已有其他客户端登录此账户
-            result = {'code': 10003, 'error': 'Other user is acitved, please login!!!!'}
-            return JsonResponse(result)
-        func(request, *args, **kwargs)
-        # return func(request, *args, **kwargs)
-
-    return wrapper
