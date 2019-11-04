@@ -31,13 +31,13 @@
         <el-input v-model="registerForm.username" placeholder="设置后不可更改"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="pass">
-        <el-input type="password" v-model="registerForm.pass" 
+        <el-input type="password" v-model="registerForm.password_1" 
                   autocomplete="off" show-password
                   placeholder="请设置登录密码">
         </el-input>
       </el-form-item>
       <el-form-item label="确认密码" prop="checkPass">
-        <el-input type="password" v-model="registerForm.checkPass" 
+        <el-input type="password" v-model="registerForm.password_2" 
                   autocomplete="off" show-password
                   placeholder="请确认登录密码">
         </el-input>
@@ -82,8 +82,8 @@ export default {
         email: "",
         telephone: "",
         username: "",
-        pass: '',
-        checkPass: '',
+        password_1: '',
+        password_2: '',
       },
       rules: {
           pass: [
@@ -110,8 +110,8 @@ export default {
             "email": this.registerForm.email,
             "telephone": this.registerForm.telephone,
             "username": this.registerForm.username,
-            "pass": this.registerForm.pass,
-            "checkPass": this.registerForm.checkPass,
+            "password_1": this.registerForm.password_1,
+            "password_2": this.registerForm.password_2,
           }
           this.$axios({
             method: 'post',
