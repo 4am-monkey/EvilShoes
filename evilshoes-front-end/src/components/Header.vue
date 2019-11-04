@@ -128,6 +128,7 @@
 }
 .x-header .non-login div a{
     text-decoration: none;
+    outline: none;
     color: white;
 }
 .router-link-active {
