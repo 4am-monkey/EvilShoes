@@ -9,11 +9,11 @@ class UserInfo(models.Model):
     nickname = models.CharField(verbose_name='昵称', max_length=32)
     email = models.EmailField(verbose_name='邮箱', max_length=255, default='')
     telephone = models.CharField(verbose_name='手机号码', max_length=11)
-    gender = models.BooleanField(verbose_name='性别', max_length=1, choices=((0, '男'), (1, '女')))
+    # gender = models.BooleanField(verbose_name='性别', max_length=1, choices=((0, '男'), (1, '女')))
     create_time = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     update_time = models.DateTimeField(verbose_name='更新时间', auto_now=True)
     login_time = models.DateTimeField(verbose_name='登录时间', auto_now=True)
-    is_login = models.SmallIntegerField(verbose_name='登录状态', default=0)
+    # is_login = models.SmallIntegerField(verbose_name='登录状态', default=0)
 
     class Meta:
         db_table = 'user_info'

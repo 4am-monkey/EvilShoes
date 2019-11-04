@@ -107,14 +107,15 @@ def register_view(request):
         # 创建用户
         now = datetime.datetime.now()
         try:
-            UserInfo.objects.create(username=username, password=password, email=email, is_login=1)
+            UserInfo.objects.create(username=username, password=password, email=email, telephone=telephone,
+                                    nickname=username)
         except Exception as e:
             print(e)
             result = {'code': 10113, 'error': 'Username is already exists'}
             return JsonResponse(result)
         # 创建用户成功,生成token
         token = make_token(username, now)
-        result = {'code': 200, 'username': username, 'data': {'token': token.decode()}}
+        result = {'code': 200, 'username': username, 'nickname': username, 'data': {'token': token.decode()}}
         return JsonResponse(result)
 
 
@@ -152,16 +153,17 @@ def login_view(request):
     user.login_time = now
     user.save()
 
+    nickname = user.nickname
     # 生成token
     token = make_token(username, now)
-    result = {'code': 200, 'username': username, 'data': {'token': token.decode()}}
+    result = {'code': 200, 'nickname': nickname, 'data': {'token': token.decode()}}
     return JsonResponse(result)
 
 
 # 用户中心
 @check_login_status
 def userInfo_view(request):
-    # 显示用户信心
+    # 显示用户信息
     if request.method == 'GET':
         user = request.user
         user = UserInfo.objects.filter(username=user.username)[0]
