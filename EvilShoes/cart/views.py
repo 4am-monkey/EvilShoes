@@ -61,3 +61,36 @@ def cart(request):
             return JsonResponse(result)
         cart_info = CartInfo.objects.filter(user=user.username, name=name)[0]
         cart_info.delete()
+
+    # 4.加入购物车
+    elif request.method == 'POST':
+        json_str = request.body
+        if not json_str:
+            result = {'code': 30106, 'error': 'Please give me data!'}
+            return JsonResponse(result)
+        json_obj = json.loads(json_str.decode())
+        name = json_obj['name']
+        price = json_obj['price']
+        count = json_obj['count']
+        if not name:
+            result = {'code': 30107, 'error': 'Please give me name of goods!'}
+            return JsonResponse(result)
+        if not price:
+            result = {'code': 30108, 'error': 'Please give me price!'}
+            return JsonResponse(result)
+        if not count:
+            result = {'code': 30109, 'error': 'Please give me count!'}
+            return JsonResponse(result)
+        user = request.user
+        try:
+            # 购物车中已经有这件商品则数量增加
+            cart_info = CartInfo.objects.get(user=user.username, name=name)
+            cart_info.count += count
+            cart_info.save()
+        except Exception as e:
+            print(e)
+            # 购物车中没有这件商品则增加商品
+            CartInfo.objects.create(user=user.username, name=name, unit_price=price, count=count)
+
+        result = {'code': 200}
+        return JsonResponse(result)

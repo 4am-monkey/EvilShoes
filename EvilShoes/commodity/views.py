@@ -1,11 +1,15 @@
+import json
 from django.http import JsonResponse
 from django.shortcuts import render
 
 # Create your views here.
+from cart.models import CartInfo
 from commodity.models import *
 
-
 # 商品信息
+from user.views import check_login_status
+
+
 def GoodsInfo(request):
     if request.method == 'GET':
         try:
@@ -22,7 +26,8 @@ def GoodsInfo(request):
                 a.append(b)
             return JsonResponse({'code': 200, 'data': a})
         except Exception as e:
-            return JsonResponse({'code': 403, 'error': 'The force majeure cause error'})
+            print(e)
+            return JsonResponse({'code': 20100, 'error': 'The force majeure cause error'})
 
 
 # 商品类别
@@ -38,7 +43,5 @@ def GoodsType(request):
                 c.append(d)
             return JsonResponse({'code': 200, 'data': c})
         except Exception as e:
-            return JsonResponse({'code': 403, 'error': 'The force majeure cause error'})
-
-# 加入购物车
-# 立即购买
+            print(e)
+            return JsonResponse({'code': 20102, 'error': 'The force majeure cause error'})
