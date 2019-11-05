@@ -17,10 +17,11 @@ ORDER_STATUS = (
 class OrderInfo(models.Model):
     user = models.ForeignKey(UserInfo)
     id = models.AutoField(verbose_name='订单ID', primary_key=True)
-    count = models.IntegerField(verbose_name='商品数量')
+    addr_id = models.IntegerField(verbose_name='收货地址ID')
+    total_amount = models.IntegerField(verbose_name='商品总数')
     total_money = models.DecimalField(verbose_name='总价', max_digits=6, decimal_places=2)
     create_time = models.DateTimeField(verbose_name='订单创建时间', auto_now_add=True)
-    status = models.IntegerField(verbose_name='订单状态', choices=ORDER_STATUS)
+    status = models.IntegerField(verbose_name='订单状态', choices=ORDER_STATUS, default=0)
 
     class Meta:
         db_table = 'order_info'
@@ -31,8 +32,8 @@ class OrderInfo(models.Model):
 class OrderGoods(models.Model):
     name = models.CharField(verbose_name="商品名称", max_length=30)
     price = models.DecimalField(verbose_name='商品价格', max_digits=6, decimal_places=2)
-    desc = models.CharField(verbose_name='描述', max_length=1000, null=True)
-    amount = models.IntegerField(verbose_name="数量", null=True, default=0)
+    # desc = models.CharField(verbose_name='描述', max_length=1000, null=True)
+    count = models.IntegerField(verbose_name="数量", null=True, default=0)
     # color = models.CharField('颜色', max_length=50)
     # spec = models.CharField('规格', max_length=50)
     # goodsimg = models.ImageField("产品图", upload_to="ordersgood", default="normal.png")
