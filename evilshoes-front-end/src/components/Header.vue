@@ -6,7 +6,7 @@
       </el-col>
       <el-col :span="4">
         <div class="grid-content">
-          <div class="logo">邪</div>
+          <div class="logo"><router-link to="/">邪</router-link></div>
         </div>
       </el-col>
       <el-col :span="8">
@@ -19,7 +19,17 @@
         <div class="grid-content">
           <!-- 未登录 -->
           <template v-if="online">
-            <div style="color: white;">已登录</div>
+            <div class="logined">
+              <div class="cart">
+                <router-link to="/cart">购物车</router-link>
+              </div>
+              <div>
+                <router-link to="/user">{{ nickname }}</router-link>
+              </div>
+              <div>
+                <router-link to="/collection">收藏</router-link>
+              </div>
+            </div>
           </template>
           <template v-else>
             <div class="non-login">
@@ -43,14 +53,15 @@
 <script>
 // 在此处导入需要的组件
 // 如：import Footer from "./components/Footer.vue"
-
+// const username = window.localStorage.getItem('evil_username')
 export default {
   name: "x-header",
   props: ["logined"],
   data() {
     return {
       online: this.global.online,
-      ipt_search: ""
+      nickname: 'default',
+      ipt_search: "",
     };
   },
   mounted: function() {
@@ -68,6 +79,7 @@ export default {
           if(response.data.code == 200){
             this.global.setOnline(true);
             this.online = this.global.online;
+            this.nickname = window.localStorage.getItem('evil_nickname');
           }else{
             this.global.setOnline(false);
             this.online = this.global.online;
@@ -83,7 +95,7 @@ export default {
 
 <style>
 .x-header .el-row {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   /* border: solid 1px red; */
   background: black;
   color: white;
@@ -144,11 +156,11 @@ export default {
   border-left: 0;
   background: rgb(24, 22, 22);
 }
-.x-header .non-login {
+.x-header .non-login, .x-header .logined {
   /* border: solid 1px rgb(230, 8, 238); */
   overflow: hidden;
 }
-.x-header .non-login > div {
+.x-header .non-login > div, .x-header .logined > div {
   float: right;
   width: 60px;
   margin-right: 30px;
@@ -157,11 +169,14 @@ export default {
   font-size: 22px;
   font-weight: 700px;
 }
-.x-header .non-login div:hover {
+.x-header .logined .cart{
+  width: 80px;
+}
+.x-header .non-login div:hover, .x-header .logined div:hover {
   background: #0b0b0b;
   border-bottom: solid 2px white;
 }
-.x-header .non-login div a {
+.x-header .non-login div a, .x-header .logined div a {
   text-decoration: none;
   outline: none;
   color: white;

@@ -69,8 +69,8 @@
                 });
                 window.localStorage.setItem('evil_token', response.data.data.token);
                 window.localStorage.setItem('evil_nickname', response.data.nickname);
-                // this.global.setLogined(!this.global.gLogin)
-                this.$router.push({ path: '/' });
+                window.localStorage.setItem('evil_username', response.data.username);
+                this.$router.replace({ path: '/' })
             }else{
               if(response.data.code == 10204){
                 this.$message.error('用户名或密码错误！');

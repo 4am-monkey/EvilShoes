@@ -118,7 +118,8 @@ export default {
                   type: 'success'
               });
               window.localStorage.setItem('evil_token', response.data.data.token);
-              window.localStorage.setItem('evil_nickname', response.data.username);
+              window.localStorage.setItem('evil_nickname', response.data.nickname);
+              window.localStorage.setItem('evil_username', response.data.username);
               this.$router.push({ path: '/' });
             }else{
               if(response.data.code == 10112){

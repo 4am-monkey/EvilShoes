@@ -3,11 +3,11 @@ from django.http import JsonResponse
 from django.shortcuts import render
 
 # Create your views here.
-from cart.models import CartInfo
-from commodity.models import *
+from .models import CommodityInfo
+from .models import CommodityClassify
 
 # 商品信息
-from user.views import check_login_status
+# from user.views import check_login_status
 
 
 def GoodsInfo(request):

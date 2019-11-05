@@ -156,7 +156,8 @@ def login_view(request):
     nickname = user.nickname
     # 生成token
     token = make_token(username, now)
-    result = {'code': 200, 'nickname': nickname, 'data': {'token': token.decode()}}
+    result = {'code': 200, 'username': username, 'nickname': nickname, 'data': {
+        'token': token.decode()}}
     return JsonResponse(result)
 
 # 前端头部状态显示

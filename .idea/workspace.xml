@@ -2,16 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="32905bfd-5559-4ff1-a91f-85d157ef7ef9" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EvilShoes/user/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/EvilShoes/user/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EvilShoes/commodity/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/EvilShoes/commodity/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EvilShoes/user/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/EvilShoes/user/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/evilshoes-front-end/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/evilshoes-front-end/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/evilshoes-front-end/src/assets/global.js" beforeDir="false" afterPath="$PROJECT_DIR$/evilshoes-front-end/src/assets/global.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/evilshoes-front-end/src/components/Header.vue" beforeDir="false" afterPath="$PROJECT_DIR$/evilshoes-front-end/src/components/Header.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/evilshoes-front-end/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/evilshoes-front-end/src/main.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/evilshoes-front-end/src/pages/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/evilshoes-front-end/src/pages/Home.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/evilshoes-front-end/src/pages/user/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/evilshoes-front-end/src/pages/user/Login.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/evilshoes-front-end/src/pages/user/Register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/evilshoes-front-end/src/pages/user/Register.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/evilshoes-front-end/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/evilshoes-front-end/src/router/index.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -24,42 +22,40 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/EvilShoes/EvilShoes/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="931">
+            <state relative-caret-position="356">
               <caret line="49" column="50" selection-start-line="49" selection-start-column="50" selection-end-line="49" selection-end-column="50" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/EvilShoes/user/views.py">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/EvilShoes/commodity/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="17" column="45" selection-start-line="17" selection-start-column="45" selection-end-line="17" selection-end-column="45" />
+            <state relative-caret-position="-82" />
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/EvilShoes/commodity/views.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="597">
+              <caret line="43" column="57" selection-start-line="43" selection-start-column="57" selection-end-line="43" selection-end-column="57" />
               <folding>
-                <element signature="e#0#15#0" expanded="true" />
-                <element signature="e#1356#4425#0" />
-                <element signature="e#4462#5697#0" />
-                <element signature="e#8557#12865#0" />
+                <element signature="e#0#11#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/EvilShoes/user/urls.py">
+        <entry file="file://$PROJECT_DIR$/EvilShoes/commodity/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="133">
-              <caret line="7" column="44" selection-start-line="7" selection-start-column="44" selection-end-line="7" selection-end-column="44" />
+            <state>
               <folding>
                 <element signature="e#0#32#0" expanded="true" />
               </folding>
             </state>
           </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/EvilShoes/EvilShoes/urls.py">
-          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
     </leaf>
@@ -73,6 +69,7 @@
         <option value="$PROJECT_DIR$/EvilShoes/EvilShoes/settings.py" />
         <option value="$PROJECT_DIR$/EvilShoes/user/urls.py" />
         <option value="$PROJECT_DIR$/EvilShoes/user/views.py" />
+        <option value="$PROJECT_DIR$/EvilShoes/commodity/views.py" />
       </list>
     </option>
   </component>
@@ -103,7 +100,7 @@
               <item name="EvilShoes" type="b2602c69:ProjectViewProjectNode" />
               <item name="EvilShoes" type="462c0819:PsiDirectoryNode" />
               <item name="EvilShoes" type="462c0819:PsiDirectoryNode" />
-              <item name="EvilShoes" type="462c0819:PsiDirectoryNode" />
+              <item name="commodity" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="EvilShoes" type="b2602c69:ProjectViewProjectNode" />
@@ -173,15 +170,20 @@
     </layout>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/EvilShoes/EvilShoes/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="931">
-          <caret line="49" column="50" selection-start-line="49" selection-start-column="50" selection-end-line="49" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/EvilShoes/EvilShoes/urls.py">
       <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/EvilShoes/user/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="159" column="33" selection-start-line="159" selection-start-column="33" selection-end-line="159" selection-end-column="33" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#5915#8495#0" />
+            <element signature="e#8557#12865#0" />
+          </folding>
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/EvilShoes/user/urls.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -193,15 +195,33 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/EvilShoes/user/views.py">
+    <entry file="file://$PROJECT_DIR$/EvilShoes/EvilShoes/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="17" column="45" selection-start-line="17" selection-start-column="45" selection-end-line="17" selection-end-column="45" />
+        <state relative-caret-position="356">
+          <caret line="49" column="50" selection-start-line="49" selection-start-column="50" selection-end-line="49" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/EvilShoes/commodity/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-82" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/EvilShoes/commodity/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
           <folding>
-            <element signature="e#0#15#0" expanded="true" />
-            <element signature="e#1356#4425#0" />
-            <element signature="e#4462#5697#0" />
-            <element signature="e#8557#12865#0" />
+            <element signature="e#0#32#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/EvilShoes/commodity/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="597">
+          <caret line="43" column="57" selection-start-line="43" selection-start-column="57" selection-end-line="43" selection-end-column="57" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>

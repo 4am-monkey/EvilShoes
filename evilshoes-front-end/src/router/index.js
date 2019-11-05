@@ -10,6 +10,7 @@ import User from "@/pages/user/User.vue"
 import CList from "@/pages/commodity/CList.vue"
 import CDetails from "@/pages/commodity/CDetails.vue"
 
+import Collection from "@/pages/Collection.vue"
 import Cart from "@/pages/Cart.vue"
 import Order from "@/pages/Order.vue"
 
@@ -36,7 +37,7 @@ export default new Router({
       name: '注册'
     },
     {
-      path: '/user/:userid',
+      path: '/user',
       component: User,
       name: '用户中心'
     },
@@ -49,17 +50,23 @@ export default new Router({
     {
       path: '/commodity/:commodityid',
       component: CDetails,
-      name: '用户中心'
+      name: '商品详情'
+    },
+    // 收藏
+    {
+      path: '/collection',
+      component: Collection,
+      name: '收藏夹'
     },
     // 购物车
     {
-      path: '/cart/:userid',
+      path: '/cart',
       component: Cart,
       name: '购物车'
     },
     // 订单
     {
-      path: '/order/:userid',
+      path: '/order',
       component: Order,
       name: '订单列表'
     },
