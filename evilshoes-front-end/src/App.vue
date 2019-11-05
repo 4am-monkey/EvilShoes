@@ -15,7 +15,15 @@ export default {
   components: {
     'x-header': Header,
     'x-footer': Footer,
-  }
+  },
+  data(){
+    return {
+
+    }
+  },
+  methods: {
+    
+  },
 };
 </script>
 

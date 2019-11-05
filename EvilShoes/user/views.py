@@ -15,9 +15,9 @@ def check_login_status(func):
             result = {'code': 10000, 'error': 'Please login!'}
             return JsonResponse(result)
         try:
-            res = jwt.decode(token, 123456)
+            res = jwt.decode(token, '123456')
         except Exception as e:
-            print(e)
+            print('----', e)
             result = {'code': 10001, 'error': 'Please login!!'}
             return JsonResponse(result)
 
@@ -35,8 +35,8 @@ def check_login_status(func):
             # 已有其他客户端登录此账户
             result = {'code': 10003, 'error': 'Other user is acitved, please login!!!!'}
             return JsonResponse(result)
-        func(request, *args, **kwargs)
-        # return func(request, *args, **kwargs)
+        # func(request, *args, **kwargs)
+        return func(request, *args, **kwargs)
 
     return wrapper
 
@@ -144,7 +144,7 @@ def login_view(request):
     # 对比密码
     p_m = hashlib.md5()
     p_m.update(password.encode())
-    user = UserInfo.objects.filter(username=username, password=p_m.hexdigest())
+    user = UserInfo.objects.filter(username=username, password=p_m.hexdigest())[0]
     if not user:
         result = {'code': 10204, 'error': 'Wrong username or wrong password!'}
         return JsonResponse(result)
@@ -159,6 +159,12 @@ def login_view(request):
     result = {'code': 200, 'nickname': nickname, 'data': {'token': token.decode()}}
     return JsonResponse(result)
 
+# 前端头部状态显示
+@check_login_status
+def check_login(request):
+    if request.method == 'GET':
+        result = {'code': 200}
+        return JsonResponse(result)
 
 # 用户中心
 @check_login_status

@@ -11,14 +11,13 @@
       label-width="80px"
       :model="registerForm"
       ref="registerForm"
-      class="demo-dynamic"
       status-icon :rules="rules"
     >
       <el-form-item
         prop="email"
         label="邮箱"
         :rules="[
-          { required: false, message: '请输入邮箱地址', trigger: 'blur' },
+          { required: true, message: '请输入邮箱地址', trigger: 'blur' },
           { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }]">
         <el-input v-model="registerForm.email" placeholder="邮箱"></el-input>
       </el-form-item>
@@ -30,13 +29,13 @@
                     :rules="[{ required: true, message: '请输入用户名', trigger: 'blur' }]">
         <el-input v-model="registerForm.username" placeholder="设置后不可更改"></el-input>
       </el-form-item>
-      <el-form-item label="密码" prop="pass">
+      <el-form-item label="密码" prop="password_1">
         <el-input type="password" v-model="registerForm.password_1" 
                   autocomplete="off" show-password
                   placeholder="请设置登录密码">
         </el-input>
       </el-form-item>
-      <el-form-item label="确认密码" prop="checkPass">
+      <el-form-item label="确认密码" prop="password_2">
         <el-input type="password" v-model="registerForm.password_2" 
                   autocomplete="off" show-password
                   placeholder="请确认登录密码">
@@ -61,8 +60,8 @@ export default {
         if (value === '') {
           callback(new Error('请输入密码'));
         } else {
-          if (this.registerForm.checkPass !== '') {
-            this.$refs.registerForm.validateField('checkPass');
+          if (this.registerForm.password_1 !== '') {
+            this.$refs.registerForm.validateField('password_2');
           }
           callback();
         }
@@ -70,14 +69,14 @@ export default {
       var validatePass2 = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'));
-        } else if (value !== this.registerForm.pass) {
+        } else if (value !== this.registerForm.password_1) {
           callback(new Error('两次输入密码不一致!'));
         } else {
           callback();
         }
       };
     return {
-      regLabelPosition: "left",
+      regLabelPosition: "right",
       registerForm: {
         email: "",
         telephone: "",
@@ -86,26 +85,21 @@ export default {
         password_2: '',
       },
       rules: {
-          pass: [
-            { validator: validatePass, trigger: 'blur' }
+          password_1: [
+            { validator: validatePass, trigger: 'blur' },
+            { required: true, message: '请输入密码', trigger: 'blur' }
           ],
-          checkPass: [
-            { validator: validatePass2, trigger: 'blur' }
+          password_2: [
+            { validator: validatePass2, trigger: 'blur' },
+            { required: true, message: '请确认密码', trigger: 'blur' }
           ]
-        }
+      }
     };
   },
   methods: {
     register(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
-          // let email = this.registerForm.email
-          // let telephone = this.registerForm.telephone
-          // let username = this.registerForm.username
-          // let pass = this.registerForm.pass
-          // let checkPass = this.registerForm.checkPass
-          // window.console.log(email, telephone)
           let param = {
             "email": this.registerForm.email,
             "telephone": this.registerForm.telephone,
@@ -118,11 +112,20 @@ export default {
             url: 'http://127.0.0.1:8000/user/register',
             data: param
           }).then((response) => {
-            this.$message({
+            if(response.data.code == 200){
+              this.$message({
                   message: '注册成功',
                   type: 'success'
-                });
-            window.console.log(response.data)
+              });
+              window.localStorage.setItem('evil_token', response.data.data.token);
+              window.localStorage.setItem('evil_nickname', response.data.username);
+              this.$router.push({ path: '/' });
+            }else{
+              if(response.data.code == 10112){
+                this.$message.error('用户名已被使用！');
+                this.registerForm.username = '';
+              }
+            }
           });
         } else {
           window.console.log('error submit!!');
