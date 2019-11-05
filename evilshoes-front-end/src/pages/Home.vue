@@ -13,9 +13,9 @@
       <el-col :span="2"></el-col>
       <el-col :span="20">
         <el-card shadow="hover" :body-style="{ padding: '0px', border: '0px'}">
-          <img src="" alt="">
+          <img src="http://127.0.0.1:8000/media/wolf.jpeg" alt="">
           <div>
-            
+
           </div>
         </el-card>
       </el-col>
