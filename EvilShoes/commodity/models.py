@@ -8,7 +8,8 @@ class CommodityInfo(models.Model):
     shelves = models.BooleanField(verbose_name='是否在售', default=True)
     price = models.DecimalField(verbose_name='商品价格', max_digits=6, decimal_places=2, null=False)
     description = models.TextField(verbose_name='商品描述')
-    images = models.ImageField(verbose_name='商品图片', upload_to='commodity/', blank=True, null=True)
+    images = models.ImageField(verbose_name='商品图片', upload_to='commodity/',
+                               blank=True, null=True)
     classify = models.ForeignKey('CommodityClassify', verbose_name='商品分类', on_delete=models.CASCADE)
 
     class Meta:
