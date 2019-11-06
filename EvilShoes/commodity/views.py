@@ -6,42 +6,82 @@ from django.shortcuts import render
 from .models import CommodityInfo
 from .models import CommodityClassify
 
-# 商品信息
-# from user.views import check_login_status
 
-
-def GoodsInfo(request):
+# 分类接口
+def classify_view(request):
+    # 获取所有分类
     if request.method == 'GET':
-        try:
-            goods = CommodityInfo.objects.all()
-            a = []
-            for good in goods:
-                b = {}
-                b['id'] = good.id
-                b['name'] = good.name
-                b['shelves'] = good.shelves
-                b['price'] = str(good.price)
-                b['description'] = good.description
-                b['images'] = good.images
-                a.append(b)
-            return JsonResponse({'code': 200, 'data': a})
-        except Exception as e:
-            print(e)
-            return JsonResponse({'code': 20100, 'error': 'The force majeure cause error'})
+        all_classify_info = CommodityClassify.objects.all()
+        data = []
+        for classify_info in all_classify_info:
+            type = {}
+            type['name'] = classify_info.cname
+            type['description'] = classify_info.description
+            data.append(type)
+        if not data:
+            result = {'code': 20100, 'data': 'Please give me data'}
+            return JsonResponse(result)
+        result = {'code': 200, 'data': data}
+        return JsonResponse(result)
 
 
-# 商品类别
-def GoodsType(request):
+# 所有商品接口
+def all_commodity(request):
+    # 获取所有的商品
     if request.method == 'GET':
-        try:
-            gts = CommodityClassify.objects.all()
-            c = []
-            for gt in gts:
-                d = {}
-                d['name'] = gt.name
-                d['description'] = gt.description
-                c.append(d)
-            return JsonResponse({'code': 200, 'data': c})
-        except Exception as e:
-            print(e)
-            return JsonResponse({'code': 20101, 'error': 'The force majeure cause error'})
+        commodities = CommodityInfo.objects.all()
+        data = []
+        for com in commodities:
+            c = {}
+            c['id'] = com.id
+            c['name'] = com.name
+            c['price'] = str(com.price)
+            c['images'] = com.images
+            data.append(c)
+        if not data:
+            result = {'code': 20101, 'data': 'Please give me data'}
+            return JsonResponse(result)
+        result = {'code': 200, 'data': data}
+        return JsonResponse(result)
+
+
+# 分类下的商品接口
+def classify_commodity(request):
+    # 获取分类下的所有商品
+    if request.method == 'GET':
+        commodities = CommodityInfo.objects.filter(name=classify.name)
+        data = []
+        for tycom in commodities:
+            cc = {}
+            cc['id'] = tycom.id
+            cc['name'] = tycom.name
+            cc['price'] = str(tycom.price)
+            cc['images'] = tycom.images
+            data.append(cc)
+        if not data:
+            result = {'code': 20102, 'data': 'Please give me data'}
+            return JsonResponse(result)
+        result = {'code': 200, 'data': data}
+        return JsonResponse(result)
+
+
+# 商品详情接口
+def commodity_details(request):
+    # 获取指定id的商品详情
+    if request.method == 'GET':
+        commodities = CommodityInfo.objects.filter(id=id)
+        data = []
+        for coms in commodities:
+            ccc = {}
+            ccc['id'] = coms.id
+            ccc['name'] = coms.name
+            ccc['description'] = coms.description
+            ccc['shelves'] = coms.shelves
+            ccc['price'] = str(coms.price)
+            ccc['images'] = coms.images
+            data.append(ccc)
+        if not data:
+            result = {'code': 20103, 'data': 'Please give me data'}
+            return JsonResponse(result)
+        result = {'code': 200, 'data': data}
+        return JsonResponse(result)
