@@ -54,7 +54,7 @@
 // 如：import Footer from "./components/Footer.vue"
 
 export default {
-  name: "x-header",
+  name: "x-register",
   data() {
       var validatePass = (rule, value, callback) => {
         if (value === '') {

@@ -144,12 +144,13 @@ def login_view(request):
     # 对比密码
     p_m = hashlib.md5()
     p_m.update(password.encode())
-    user = UserInfo.objects.filter(username=username, password=p_m.hexdigest())[0]
-    if not user:
+    users = UserInfo.objects.filter(username=username, password=p_m.hexdigest())
+    if not users:
         result = {'code': 10204, 'error': 'Wrong username or wrong password!'}
         return JsonResponse(result)
     # 添加 登录时间
     now = datetime.datetime.now()
+    user = users[0]
     user.login_time = now
     user.save()
 

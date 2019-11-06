@@ -15,12 +15,12 @@ def classify_view(request):
         data = []
         for classify_info in all_classify_info:
             type = {}
-            type['name'] = classify_info.cname
+            type['name'] = classify_info.name
             type['description'] = classify_info.description
             data.append(type)
-        if not data:
-            result = {'code': 20100, 'data': 'Please give me data'}
-            return JsonResponse(result)
+        # if not data:
+        #     result = {'code': 20100, 'data': 'table classify is empty'}
+        #     return JsonResponse(result)
         result = {'code': 200, 'data': data}
         return JsonResponse(result)
 
@@ -36,20 +36,20 @@ def all_commodity(request):
             c['id'] = com.id
             c['name'] = com.name
             c['price'] = str(com.price)
-            c['images'] = com.images
+            c['images'] = str(com.images)
             data.append(c)
-        if not data:
-            result = {'code': 20101, 'data': 'Please give me data'}
-            return JsonResponse(result)
+        # if not data:
+        #     result = {'code': 20101, 'data': 'Please give me data'}
+        #     return JsonResponse(result)
         result = {'code': 200, 'data': data}
         return JsonResponse(result)
 
 
 # 分类下的商品接口
-def classify_commodity(request):
+def classify_commodity(request, typename):
     # 获取分类下的所有商品
     if request.method == 'GET':
-        commodities = CommodityInfo.objects.filter(name=classify.name)
+        commodities = CommodityInfo.objects.filter(classify=typename)
         data = []
         for tycom in commodities:
             cc = {}

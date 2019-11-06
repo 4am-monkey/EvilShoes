@@ -34,10 +34,9 @@
 <script>
   // 在此处导入需要的组件
   // 如：import Footer from "./components/Footer.vue"
-  // import Header from "./components/Header.vue"
 
   export default {
-    name: 'x-header',
+    name: 'x-login',
     data() {
       return {
         loginLabelPosition: "right",
