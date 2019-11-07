@@ -30,7 +30,36 @@
             </el-form-item>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="我的地址">配置管理</el-tab-pane>
+        <el-tab-pane label="我的地址">
+          <el-button type="text" @click="dialogVisible = true">新增地址</el-button>
+          <el-dialog
+            title="新增地址"
+            :visible.sync="dialogVisible"
+            width="30%"
+            :before-close="handleClose"
+          >
+            <el-form
+              :label-position="labelPosition"
+              label-width="100px"
+              :model="address"
+              class="uaddr"
+            >
+              <el-form-item label="收货地址">
+                <el-input type="textarea" autosize placeholder="" v-model="userInfo.addr"></el-input>
+              </el-form-item>
+              <el-form-item label="收件人姓名">
+                <el-input v-model="userInfo.name"></el-input>
+              </el-form-item>
+              <el-form-item label="收件人手机号">
+                <el-input v-model="userInfo.tel"></el-input>
+              </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+              <el-button @click="dialogVisible = false">取 消</el-button>
+              <el-button type="primary" @click="saveAddr">确 定</el-button>
+            </span>
+          </el-dialog>
+        </el-tab-pane>
         <el-tab-pane label="我的订单">角色管理</el-tab-pane>
       </el-tabs>
     </div>
@@ -49,7 +78,13 @@ export default {
         nickname: "",
         email: "",
         telephone: ""
-      }
+      },
+      address: {
+        addr: "",
+        name: "",
+        tel: ""
+      },
+      dialogVisible: false
     };
   },
   mounted() {
@@ -110,6 +145,9 @@ export default {
           //
         }
       });
+    },
+    saveAddr() {
+      this.dialogVisible = false;
     }
   }
 };
