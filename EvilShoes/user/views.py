@@ -234,6 +234,8 @@ def userInfo_view(request):
             user.telephone = telephone
             user.email = email
             user.save()
+            result = {'code': 200, 'msg': 'modify success'}
+            return JsonResponse(result)
         except Exception as e:
             print('update error!')
             print(e)
