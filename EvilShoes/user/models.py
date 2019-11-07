@@ -13,6 +13,7 @@ class UserInfo(models.Model):
     create_time = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     update_time = models.DateTimeField(verbose_name='更新时间', auto_now=True)
     login_time = models.DateTimeField(verbose_name='登录时间', auto_now=True)
+
     # is_login = models.SmallIntegerField(verbose_name='登录状态', default=0)
 
     class Meta:
@@ -40,3 +41,9 @@ class ReceiverInfo(models.Model):
         db_table = 'receiver_info'
         verbose_name = '收件人信息'
         verbose_name_plural = verbose_name
+
+    def __str__(self):
+        """
+            定义每个数据对象的显示信息
+        """
+        return self.receiver

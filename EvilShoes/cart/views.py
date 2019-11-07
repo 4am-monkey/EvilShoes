@@ -9,7 +9,7 @@ from .models import *
 # Create your views here.
 
 @check_login_status
-def cart(request):
+def cart_view(request):
     user = request.user
     # 1.显示购物车信息
     if request.method == 'GET':

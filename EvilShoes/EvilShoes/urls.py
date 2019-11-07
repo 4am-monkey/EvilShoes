@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^user/', include('user.urls')),
     url(r'^commodity/', include('commodity.urls')),
-
-    url(r'^media/(?P<path>.*)', serve, {"document_root":MEDIA_ROOT}),
+    url(r'^cart/', include('cart.urls')),
+    url(r'^order/', include('order.urls')),
+    url(r'^media/(?P<path>.*)', serve, {"document_root": MEDIA_ROOT}),
 ]

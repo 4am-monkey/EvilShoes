@@ -16,3 +16,9 @@ class CartInfo(models.Model):
         db_table = 'cart_info'
         verbose_name = '购物车'
         verbose_name_plural = verbose_name
+
+    def __str__(self):
+        """
+            定义每个数据对象的显示信息
+        """
+        return self.name
