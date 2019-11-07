@@ -37,7 +37,7 @@ export default new Router({
       name: '注册'
     },
     {
-      path: '/user',
+      path: '/user/:nickname',
       component: User,
       name: '用户中心'
     },

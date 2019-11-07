@@ -1,17 +1,17 @@
 <template>
   <div class="x-home">
     <el-row class="types">
-      <el-col :span="2"></el-col>
-      <el-col :span="20">
+      <!-- <el-col :span="2"></el-col> -->
+      <el-col :span="24">
         <ul>
           <li v-for="type in types" :key="type.id">{{ type.name }}</li>
         </ul>
       </el-col>
-      <el-col :span="2"></el-col>
+      <!-- <el-col :span="2"></el-col> -->
     </el-row>
     <el-row class="goods">
-      <el-col :span="2"></el-col>
-      <el-col :span="20">
+      <!-- <el-col :span="2"></el-col> -->
+      <el-col :span="24">
           <el-card shadow="hover" 
                  :body-style="{ padding: '0px', border: '0px'}"
                  v-for="cmd in commodities" :key="cmd.id"
@@ -24,7 +24,7 @@
         </el-card>
         <!-- </router-link> -->
       </el-col>
-      <el-col :span="2"></el-col>
+      <!-- <el-col :span="2"></el-col> -->
     </el-row>
   </div>
 </template>

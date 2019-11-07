@@ -1,8 +1,8 @@
 <template>
   <div class="x-details">
     <el-row class="good">
-      <el-col :span="2"></el-col>
-      <el-col :span="20">
+      <!-- <el-col :span="2"></el-col> -->
+      <el-col :span="24">
         <el-page-header @back="goBack" content="详情"></el-page-header>
         <img :src="'http://127.0.0.1:8000/media/' + commodity.image" alt="">
         <div class="det">
@@ -21,7 +21,7 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="2"></el-col>
+      <!-- <el-col :span="2"></el-col> -->
     </el-row>
   </div>
 </template>

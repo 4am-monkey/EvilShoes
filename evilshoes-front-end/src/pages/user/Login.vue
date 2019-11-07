@@ -70,6 +70,7 @@
                 window.localStorage.setItem('evil_nickname', response.data.nickname);
                 window.localStorage.setItem('evil_username', response.data.username);
                 this.$router.push({ path: '/'})
+                this.$router.go(0);
             }else{
               if(response.data.code == 10204){
                 this.$message.error('用户名或密码错误！');

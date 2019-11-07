@@ -35,6 +35,9 @@ def check_login_status(func):
             # 已有其他客户端登录此账户
             result = {'code': 10003, 'error': 'Other user is acitved, please login!!!!'}
             return JsonResponse(result)
+
+        request.user = user
+
         # func(request, *args, **kwargs)
         return func(request, *args, **kwargs)
 
@@ -174,7 +177,7 @@ def userInfo_view(request):
     # 显示用户信息
     if request.method == 'GET':
         user = request.user
-        user = UserInfo.objects.filter(username=user.username)[0]
+        # user = UserInfo.objects.filter(username=user.username)[0]
         data = {}
         data['username'] = user.username
         data['nickname'] = user.nickname

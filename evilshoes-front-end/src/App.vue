@@ -1,7 +1,13 @@
 <template>
   <div id="app">
     <x-header></x-header>
-    <router-view></router-view>
+    <el-row class="bj">
+      <el-col :span="2"></el-col>
+      <el-col :span="20">
+        <router-view></router-view>
+      </el-col>
+      <el-col :span="2"></el-col>
+    </el-row>
     <x-footer></x-footer>
   </div>
 </template>
@@ -40,5 +46,8 @@ body{
   text-align: center;
   color: #2c3e50; */
   /* border: solid 1px rebeccapurple; */
+}
+#app .bj .el-col:nth-child(1), .x-home .goods .el-col:nth-child(3){
+  border: solid 1px white;
 }
 </style>
