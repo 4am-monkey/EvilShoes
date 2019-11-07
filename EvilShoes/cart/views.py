@@ -81,7 +81,6 @@ def cart_view(request):
         if not count:
             result = {'code': 30109, 'error': 'Please give me count!'}
             return JsonResponse(result)
-        user = request.user
         try:
             # 购物车中已经有这件商品则数量增加
             cart_info = CartInfo.objects.get(user=user.username, name=name)

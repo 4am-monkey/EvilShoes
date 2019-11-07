@@ -133,7 +133,7 @@ def login_view(request):
     if not json_str:
         result = {'code': 10201, 'error': 'Please give me data!'}
         return JsonResponse(result)
-    json_obj = json.loads(json_str)
+    json_obj = json.loads(json_str.decode())
 
     username = json_obj.get('username')
     password = json_obj.get('password')

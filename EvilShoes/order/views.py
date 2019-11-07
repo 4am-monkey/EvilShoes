@@ -38,6 +38,9 @@ def order_view(request):
             price = commodity['price']
             OrderGoods.objects.create(order=order.id, name=name, count=count, price=price)
 
+        result = {'code': 200, 'data': 'Create successfully!'}
+        return JsonResponse(result)
+
     # 查看订单
     elif request.method == 'GET':
         # result = {'code': 200, 'all_order': [
