@@ -66,22 +66,34 @@ def classify_commodity(request, typename):
 
 
 # 商品详情接口
-def commodity_details(request):
+def commodity_details(request, commodityid):
     # 获取指定id的商品详情
     if request.method == 'GET':
-        commodities = CommodityInfo.objects.filter(id=id)
-        data = []
-        for coms in commodities:
-            ccc = {}
-            ccc['id'] = coms.id
-            ccc['name'] = coms.name
-            ccc['description'] = coms.description
-            ccc['shelves'] = coms.shelves
-            ccc['price'] = str(coms.price)
-            ccc['images'] = coms.images
-            data.append(ccc)
-        if not data:
-            result = {'code': 20103, 'data': 'Please give me data'}
+        commodities = CommodityInfo.objects.filter(id=commodityid)
+        # data = []
+        # for coms in commodities:
+        #     ccc = {}
+        #     ccc['id'] = coms.id
+        #     ccc['name'] = coms.name
+        #     ccc['description'] = coms.description
+        #     ccc['shelves'] = coms.shelves
+        #     ccc['price'] = str(coms.price)
+        #     ccc['images'] = coms.images
+        #     data.append(ccc)
+        if not commodities:
+            result = {'code': 20104, 'data': 'commodity not exist'}
             return JsonResponse(result)
+        commodity = commodities[0]
+        data = {
+            'id': commodity.id,
+            'name': commodity.name,
+            'description': commodity.description,
+            'shelves': commodity.shelves,
+            'price': str(commodity.price),
+            'image': str(commodity.images),
+        }
+        # if not data:
+        #     result = {'code': 20103, 'data': 'Please give me data'}
+        #     return JsonResponse(result)
         result = {'code': 200, 'data': data}
         return JsonResponse(result)

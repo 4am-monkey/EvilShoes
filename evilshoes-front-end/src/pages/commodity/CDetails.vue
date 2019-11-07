@@ -1,0 +1,130 @@
+<template>
+  <div class="x-details">
+    <el-row class="good">
+      <el-col :span="2"></el-col>
+      <el-col :span="20">
+        <el-page-header @back="goBack" content="详情"></el-page-header>
+        <img :src="'http://127.0.0.1:8000/media/' + commodity.image" alt="">
+        <div class="det">
+          <div class="dtitle">{{ commodity.name }}</div>
+          <div class="dprice">
+            <span>价格</span>
+            <span>{{ '￥' + commodity.price }}</span>
+          </div>
+          <div class="count">
+            <span>数量</span><el-input-number v-model="num" controls-position="right" @blur="handleBlur" :min="1" :max="10"></el-input-number>
+          </div>
+          <div class="btn">
+            <el-button type="primary">立即购买</el-button>
+            <el-button type="primary" icon="el-icon-shopping-cart-2">加入购物车</el-button>
+            <el-button type="primary" icon="el-icon-star-off">收藏</el-button>
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="2"></el-col>
+    </el-row>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "x-details",
+  data() {
+    return {
+      c_id: "",
+      commodity: {},
+      num: 1,
+    };
+  },
+  mounted: function() {
+    this.c_id = this.$route.params.cid;
+    this.$axios({
+      method: "get",
+      url: "http://127.0.0.1:8000/commodity/detail/" + this.c_id
+    }).then(response => {
+      // window.console.log(response.data);
+      if (response.data.code == 200) {
+        this.commodity = response.data.data;
+      } else {
+        //
+      }
+    });
+  },
+  methods: {
+    handleBlur(value){
+      value = 1
+      this.num = value
+    },
+    goBack(){
+      this.$router.go(-1)
+    }
+  }
+};
+</script>
+
+<style>
+.x-details{
+  /* border: solid 1px red; */
+}
+.x-details .good{
+  /* border: solid 1px red; */
+}
+.x-details .good .el-col:nth-child(1), .x-home .goods .el-col:nth-child(3){
+  border: solid 1px white;
+}
+.x-details .good .el-col:nth-child(2){
+  overflow: hidden;
+}
+.x-details .el-page-header{
+  margin: 10px 0;
+}
+.x-details .good img{
+  width: 350px;
+  height: 350px;
+  float: left;
+  margin-right: 30px;
+  border: solid 5px red;
+  cursor: pointer;
+}
+.x-details .good .det{
+  width: 600px;
+  height: 350px;
+  float: left;
+  /* border: solid 1px red; */
+  /* overflow: hidden; */
+}
+.x-details .good .det .dtitle{
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  /* border: solid 1px red; */
+}
+.x-details .good .det .dprice{
+  height: 40px;
+  line-height: 40px;
+}
+.x-details .good .det .dprice span:nth-child(1){
+  color: rgb(90, 89, 89);
+  /* font-size: 16px; */
+  margin-right: 25px;
+}
+.x-details .good .det .dprice span:nth-child(2){
+  color: red;
+  font-size: 20px;
+}
+.x-details .good .det .count{
+  margin-bottom: 30px;
+}
+.x-details .good .det .count span{
+  margin-right: 25px;
+  color: rgb(90, 89, 89);
+}
+.x-details .good .det .btn{
+  margin-top: 100px;
+  padding-left: 100px;
+  /* border: solid 1px red; */
+}
+.x-details .good .det .btn .el-button{
+  margin-right: 15px;
+}
+</style>

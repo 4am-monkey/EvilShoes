@@ -48,7 +48,7 @@ export default new Router({
       name: '商品列表'
     },
     {
-      path: '/commodity/:commodityid',
+      path: '/details/:cid',
       component: CDetails,
       name: '商品详情'
     },

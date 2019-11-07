@@ -12,15 +12,17 @@
     <el-row class="goods">
       <el-col :span="2"></el-col>
       <el-col :span="20">
-        <el-card shadow="hover" 
+          <el-card shadow="hover" 
                  :body-style="{ padding: '0px', border: '0px'}"
-                 v-for="cmd in commodities" :key="cmd.id">
-          <img :src="'http://127.0.0.1:8000/media/' + cmd.images" alt="">
-          <div>
+                 v-for="cmd in commodities" :key="cmd.id"
+                 >
+          <img :src="'http://127.0.0.1:8000/media/' + cmd.images" alt="" @click="toDetails(cmd.id)">
+          <div @click="toDetails(cmd.id)">
             <div class="hprice">{{ '￥' + cmd.price }}</div>
             <div class="htitle">{{ cmd.name }}</div>
           </div>
         </el-card>
+        <!-- </router-link> -->
       </el-col>
       <el-col :span="2"></el-col>
     </el-row>
@@ -63,7 +65,11 @@ export default {
       }
     });
   },
-  methods: {}
+  methods: {
+    toDetails(c_id){
+      this.$router.push({path: '/details/' + c_id});
+    }
+  }
 };
 </script>
 

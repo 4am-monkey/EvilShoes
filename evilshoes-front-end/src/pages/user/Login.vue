@@ -69,7 +69,7 @@
                 window.localStorage.setItem('evil_token', response.data.data.token);
                 window.localStorage.setItem('evil_nickname', response.data.nickname);
                 window.localStorage.setItem('evil_username', response.data.username);
-                this.$router.replace({ path: '/' })
+                this.$router.push({ path: '/'})
             }else{
               if(response.data.code == 10204){
                 this.$message.error('用户名或密码错误！');
