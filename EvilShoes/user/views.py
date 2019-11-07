@@ -294,9 +294,12 @@ def receiver_view(request):
             return JsonResponse(result)
         # 创建数据
         try:
+            if is_default == 'True':
+                ReceiverInfo.objects.filter(user=user)[0].update(is_default=False)
+                ReceiverInfo.objects.create(receiver=receiver, address=address, receiver_phone=receiver_phone,
+                                            is_default=is_default, user=user)
             ReceiverInfo.objects.create(receiver=receiver, address=address, receiver_phone=receiver_phone,
-                                        is_default=is_default, user=user)
-            print('===============')
+                                        user=user)
         except Exception as e:
             print('create error!')
             print(e)
@@ -317,7 +320,7 @@ def receiver_view(request):
             result = {'code': 10407, 'error': 'Please give me addr_id!'}
             return JsonResponse(result)
         try:
-            ReceiverInfo.objects.filter(user=user.username).update(is_default=False)
+            ReceiverInfo.objects.filter(user=user)[0].update(is_default=False)
             address = ReceiverInfo.objects.get(user=user.username, id=addr_id)
             address.update(is_default=True)
             result = {'code': 200, 'data': 'Modify successfully!'}
