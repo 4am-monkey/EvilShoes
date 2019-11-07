@@ -32,12 +32,7 @@
         </el-tab-pane>
         <el-tab-pane label="我的地址">
           <el-button type="text" @click="dialogVisible = true">新增地址</el-button>
-          <el-dialog
-            title="新增地址"
-            :visible.sync="dialogVisible"
-            width="30%"
-            :before-close="handleClose"
-          >
+          <el-dialog title="新增地址" :visible.sync="dialogVisible" width="40%" @closed="handleClose">
             <el-form
               :label-position="labelPosition"
               label-width="100px"
@@ -45,17 +40,20 @@
               class="uaddr"
             >
               <el-form-item label="收货地址">
-                <el-input type="textarea" autosize placeholder="" v-model="userInfo.addr"></el-input>
+                <el-input type="textarea" autosize placeholder v-model="address.addr"></el-input>
               </el-form-item>
               <el-form-item label="收件人姓名">
-                <el-input v-model="userInfo.name"></el-input>
+                <el-input v-model="address.name"></el-input>
               </el-form-item>
               <el-form-item label="收件人手机号">
-                <el-input v-model="userInfo.tel"></el-input>
+                <el-input v-model="address.tel"></el-input>
+              </el-form-item>
+              <el-form-item label>
+                <el-checkbox v-model="checked">设为默认地址</el-checkbox>
               </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-              <el-button @click="dialogVisible = false">取 消</el-button>
+              <el-button @click="dialogVisible=false">取 消</el-button>
               <el-button type="primary" @click="saveAddr">确 定</el-button>
             </span>
           </el-dialog>
@@ -84,7 +82,8 @@ export default {
         name: "",
         tel: ""
       },
-      dialogVisible: false
+      dialogVisible: false,
+      checked: false
     };
   },
   mounted() {
@@ -101,7 +100,7 @@ export default {
       url: "http://127.0.0.1:8000/user/info",
       headers: { Authorization: AUTH_TOKEN }
     }).then(response => {
-      window.console.log(response.data);
+      // window.console.log(response.data);
       if (response.data.code == 200) {
         var user = response.data.data;
         this.username = user.username;
@@ -140,7 +139,8 @@ export default {
             message: "修改成功",
             type: "success"
           });
-          // this.$router.go(0);
+          window.localStorage.setItem("evil_nickname", this.userInfo.nickname);
+          this.$router.go(0);
         } else {
           //
         }
@@ -148,6 +148,41 @@ export default {
     },
     saveAddr() {
       this.dialogVisible = false;
+      var AUTH_TOKEN = window.localStorage.getItem("evil_token");
+      var params = {
+        receiver: this.address.name,
+        address: this.address.addr,
+        receiver_phone: this.address.tel,
+        is_default: this.checked
+      };
+      this.$axios({
+        method: "post",
+        url: "http://127.0.0.1:8000/user/address",
+        data: params,
+        headers: { Authorization: AUTH_TOKEN }
+      }).then(response => {
+        window.console.log(response.data);
+        if (response.data.code == 200) {
+          this.$message({
+            message: "添加成功",
+            type: "success"
+          });
+        } else {
+          //
+        }
+      });
+    },
+    // dclose(){
+    //   this.address.addr = '';
+    //   this.address.name = '';
+    //   this.address.tel = '';
+    //   this.dialogVisible = false;
+    // },
+    handleClose() {
+      this.address.addr = "";
+      this.address.name = "";
+      this.address.tel = "";
+      this.checked = false;
     }
   }
 };
@@ -164,6 +199,6 @@ export default {
   margin-bottom: 30px;
 }
 .x-user .uinfo {
-  width: 300px;
+  width: 350px;
 }
 </style>

@@ -295,10 +295,13 @@ def receiver_view(request):
         # 创建数据
         try:
             ReceiverInfo.objects.create(receiver=receiver, address=address, receiver_phone=receiver_phone,
-                                        is_default=is_default, user=user.username)
+                                        is_default=is_default, user=user)
+            print('===============')
         except Exception as e:
             print('create error!')
             print(e)
+            result = {'code': 10412, 'data': 'create error!'}
+            return JsonResponse(result)
 
         result = {'code': 200, 'data': 'append successfully!'}
         return JsonResponse(result)
