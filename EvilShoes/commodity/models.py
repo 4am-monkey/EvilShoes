@@ -17,6 +17,12 @@ class CommodityInfo(models.Model):
         verbose_name = '商品信息'
         verbose_name_plural = verbose_name
 
+    def __str__(self):
+        """
+            定义每个数据对象的显示信息
+        """
+        return self.name
+
 
 class CommodityClassify(models.Model):
     name = models.CharField(verbose_name='分类名字', max_length=150, null=False)
@@ -26,3 +32,9 @@ class CommodityClassify(models.Model):
         db_table = 'commodity_classify'
         verbose_name = '商品分类信息'
         verbose_name_plural = verbose_name
+
+    def __str__(self):
+        """
+            定义每个数据对象的显示信息
+        """
+        return self.name

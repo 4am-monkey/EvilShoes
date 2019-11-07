@@ -18,8 +18,8 @@ class OrderInfo(models.Model):
     user = models.ForeignKey(UserInfo)
     id = models.AutoField(verbose_name='订单ID', primary_key=True)
     addr_id = models.IntegerField(verbose_name='收货地址ID')
-    total_amount = models.IntegerField(verbose_name='商品总数')
-    total_money = models.DecimalField(verbose_name='总价', max_digits=6, decimal_places=2)
+    total_amount = models.IntegerField(verbose_name='订单商品总数')
+    total_money = models.DecimalField(verbose_name='订单总价', max_digits=6, decimal_places=2)
     create_time = models.DateTimeField(verbose_name='订单创建时间', auto_now_add=True)
     status = models.IntegerField(verbose_name='订单状态', choices=ORDER_STATUS, default=0)
 
@@ -27,6 +27,12 @@ class OrderInfo(models.Model):
         db_table = 'order_info'
         verbose_name = '订单信息'
         verbose_name_plural = verbose_name
+
+    def __str__(self):
+        """
+            定义每个数据对象的显示信息
+        """
+        return self.id
 
 
 class OrderGoods(models.Model):
@@ -39,3 +45,14 @@ class OrderGoods(models.Model):
     # goodsimg = models.ImageField("产品图", upload_to="ordersgood", default="normal.png")
     # trprice = models.DecimalField('商品实际', max_digits=8, decimal_places=2)
     order = models.ForeignKey(OrderInfo)
+
+    class Meta:
+        db_table = 'order_goods'
+        verbose_name = '订单商品'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        """
+            定义每个数据对象的显示信息
+        """
+        return self.name
