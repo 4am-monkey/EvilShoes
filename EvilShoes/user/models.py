@@ -12,7 +12,7 @@ class UserInfo(models.Model):
     # gender = models.BooleanField(verbose_name='性别', max_length=1, choices=((0, '男'), (1, '女')))
     create_time = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     update_time = models.DateTimeField(verbose_name='更新时间', auto_now=True)
-    login_time = models.DateTimeField(verbose_name='登录时间', auto_now=True)
+    login_time = models.DateTimeField(verbose_name='登录时间', auto_now_add=True)
 
     # is_login = models.SmallIntegerField(verbose_name='登录状态', default=0)
 
