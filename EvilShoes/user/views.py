@@ -164,6 +164,7 @@ def login_view(request):
         'token': token.decode()}}
     return JsonResponse(result)
 
+
 # 前端头部状态显示
 @check_login_status
 def check_login(request):
@@ -171,13 +172,14 @@ def check_login(request):
         result = {'code': 200}
         return JsonResponse(result)
 
+
 # 用户中心
 @check_login_status
 def userInfo_view(request):
+    user = request.user
     # 显示用户信息
     if request.method == 'GET':
-        user = request.user
-        # user = UserInfo.objects.filter(username=user.username)[0]
+        # user = UserInfo.objects.filter(username=username)[0]
         data = {}
         data['username'] = user.username
         data['nickname'] = user.nickname
@@ -227,7 +229,7 @@ def userInfo_view(request):
             return JsonResponse(result)
         # 修改数据库
         try:
-            user = UserInfo.objects.filter(username=username)[0]
+            # user = UserInfo.objects.filter(username=username)[0]
             user.nickname = nickname
             user.telephone = telephone
             user.email = email
@@ -242,9 +244,9 @@ def userInfo_view(request):
 # 收货地址
 @check_login_status
 def receiver_view(request):
+    user = request.user
     # 地址列表
     if request.method == 'GET':
-        user = request.user
         all_address_info = ReceiverInfo.objects.filter(username=user.username)
         data = []
         for address_info in all_address_info:
@@ -289,7 +291,6 @@ def receiver_view(request):
             result = {'code': 10406, 'error': 'Length of receiver_phone must be 11bit!'}
             return JsonResponse(result)
         # 创建数据
-        user = request.user
         try:
             ReceiverInfo.objects.create(receiver=receiver, address=address, receiver_phone=receiver_phone,
                                         is_default=is_default, user=user.username)
@@ -306,7 +307,6 @@ def receiver_view(request):
             result = {'code': 10406, 'error': 'Please give me data!'}
             return JsonResponse(result)
         json_obj = json.loads(json_str.decode())
-        user = request.user
         addr_id = json_obj['addr_id']
         if not addr_id:
             result = {'code': 10407, 'error': 'Please give me addr_id!'}
@@ -329,7 +329,6 @@ def receiver_view(request):
             result = {'code': 10409, 'error': 'Please give me data!'}
             return JsonResponse(result)
         json_obj = json.loads(json_str.decode())
-        user = request.user
         addr_id = json_obj['addr_id']
         if not addr_id:
             result = {'code': 10410, 'error': 'Please give me addr_id!'}
