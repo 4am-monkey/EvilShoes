@@ -249,7 +249,7 @@ def receiver_view(request):
     user = request.user
     # 地址列表
     if request.method == 'GET':
-        all_address_info = ReceiverInfo.objects.filter(username=user.username)
+        all_address_info = ReceiverInfo.objects.filter(username=user.username).order_by('-is_default')
         data = []
         for address_info in all_address_info:
             addr = {}
