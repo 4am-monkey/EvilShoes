@@ -1,7 +1,7 @@
 from django.shortcuts import render
 import json
 from django.http import JsonResponse
-from .models import Favourite
+from .models import *
 from user.views import check_login_status
 
 
