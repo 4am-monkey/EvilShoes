@@ -9,7 +9,7 @@ class Favourite(models.Model):
     name = models.CharField(verbose_name='商品名', max_length=180, null=False)
     description = models.TextField(verbose_name='商品描述')
     images = models.ImageField(verbose_name='商品图片', upload_to='commodity/', blank=True, null=True)
-    user = models.ForeignKey('UserInfo', verbose_name='用户收藏', on_delete=models.CASCADE)
+    user = models.ForeignKey(UserInfo)
 
     class Meta:
         db_table = 'favourite'
