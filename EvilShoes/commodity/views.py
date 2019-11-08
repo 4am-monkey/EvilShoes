@@ -97,3 +97,27 @@ def commodity_details(request, commodityid):
         #     return JsonResponse(result)
         result = {'code': 200, 'data': data}
         return JsonResponse(result)
+
+
+# 搜索商品
+def search(request):
+    if request.method != 'POST':
+        result = {'code': 20105, 'error': 'Please use post!'}
+        return JsonResponse(result)
+    json_str = request.body
+    if not json_str:
+        result = {'code': 20106, 'error': 'Please give data!'}
+        return JsonResponse(result)
+    json_obj = json.loads(json_str.decode())
+    key = json_obj.get('key')
+    if not key:
+        result = {'code': 20107, 'error': 'Please give me the key!'}
+        return JsonResponse(result)
+    goods = CommodityInfo.objects.filter(name__icontains=key)[0]
+    if not goods:
+        result = {'code': 20108, 'error': "Sorry,we don't have this goods!"}
+        return JsonResponse(result)
+    result = {'code': 200, 'data': {'id': goods.id, 'name': goods.name, 'shelves': goods.shelves,
+                                    'price': str(goods.price), 'description': goods.description,
+                                    'image': str(goods.images)}}
+    return JsonResponse(result)

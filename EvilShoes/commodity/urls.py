@@ -13,6 +13,8 @@ urlpatterns = [
     url(r'type/(?P<typename>\w+)$', views.classify_commodity),
 
     # 127.0.0.1:8000/commodity/<commodityid>
-    url(r'detail/(?P<commodityid>\w+)$', views.commodity_details)
-    
+    url(r'detail/(?P<commodityid>\w+)$', views.commodity_details),
+
+    url(r'^search$', views.search)
+
 ]

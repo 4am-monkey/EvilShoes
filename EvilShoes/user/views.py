@@ -249,7 +249,7 @@ def receiver_view(request):
     user = request.user
     # 地址列表
     if request.method == 'GET':
-        all_address_info = ReceiverInfo.objects.filter(user=user)
+        all_address_info = ReceiverInfo.objects.filter(user=user).order_by('-is_default')
         data = []
         for address_info in all_address_info:
             addr = {}
@@ -295,7 +295,11 @@ def receiver_view(request):
         # 创建数据
         try:
             if is_default == True:
+<<<<<<< HEAD
                 ReceiverInfo.objects.filter(user=user).update(is_default=False)
+=======
+                ReceiverInfo.objects.filter(user=user)[0].update(is_default=False)
+>>>>>>> 9e9b7c276be9275ec835a78b35f143e72edcf3ee
                 ReceiverInfo.objects.create(receiver=receiver, address=address, receiver_phone=receiver_phone,
                                             is_default=is_default, user=user)
             else:
@@ -343,7 +347,7 @@ def receiver_view(request):
             result = {'code': 10410, 'error': 'Please give me addr_id!'}
             return JsonResponse(result)
         try:
-            address = ReceiverInfo.objects.get(user=user.username, id=addr_id)
+            address = ReceiverInfo.objects.get(user=user, id=addr_id)
             address.delete()
             result = {'code': 200, 'data': 'Delete successfully!'}
             return JsonResponse(result)
