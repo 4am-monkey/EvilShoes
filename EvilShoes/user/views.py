@@ -6,7 +6,6 @@ from django.http import JsonResponse
 import jwt
 from user.models import UserInfo, ReceiverInfo
 
-
 # 检查登录状态
 def check_login_status(func):
     def wrapper(request, *args, **kwargs):
@@ -321,9 +320,11 @@ def receiver_view(request):
             result = {'code': 10407, 'error': 'Please give me addr_id!'}
             return JsonResponse(result)
         try:
-            ReceiverInfo.objects.filter(user=user)[0].update(is_default=False)
-            address = ReceiverInfo.objects.get(user=user.username, id=addr_id)
+            ReceiverInfo.objects.filter(user=user).update(is_default=False)
+            print("-----------")
+            address = ReceiverInfo.objects.filter(user=user, id=addr_id)
             address.update(is_default=True)
+            print('==============')
             result = {'code': 200, 'data': 'Modify successfully!'}
             return JsonResponse(result)
         except Exception as e:
