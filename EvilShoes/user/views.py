@@ -249,7 +249,7 @@ def receiver_view(request):
     user = request.user
     # 地址列表
     if request.method == 'GET':
-        all_address_info = ReceiverInfo.objects.filter(username=user.username)
+        all_address_info = ReceiverInfo.objects.filter(user=user)
         data = []
         for address_info in all_address_info:
             addr = {}
@@ -294,11 +294,12 @@ def receiver_view(request):
             return JsonResponse(result)
         # 创建数据
         try:
-            if is_default == 'True':
-                ReceiverInfo.objects.filter(user=user)[0].update(is_default=False)
+            if is_default == True:
+                ReceiverInfo.objects.filter(user=user).update(is_default=False)
                 ReceiverInfo.objects.create(receiver=receiver, address=address, receiver_phone=receiver_phone,
                                             is_default=is_default, user=user)
-            ReceiverInfo.objects.create(receiver=receiver, address=address, receiver_phone=receiver_phone,
+            else:
+                ReceiverInfo.objects.create(receiver=receiver, address=address, receiver_phone=receiver_phone,
                                         user=user)
         except Exception as e:
             print('create error!')
