@@ -294,7 +294,7 @@ def receiver_view(request):
             return JsonResponse(result)
         # 创建数据
         try:
-            if is_default == 'True':
+            if is_default == True:
                 ReceiverInfo.objects.filter(user=user)[0].update(is_default=False)
                 ReceiverInfo.objects.create(receiver=receiver, address=address, receiver_phone=receiver_phone,
                                             is_default=is_default, user=user)
