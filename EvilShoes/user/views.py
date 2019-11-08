@@ -295,11 +295,7 @@ def receiver_view(request):
         # 创建数据
         try:
             if is_default == True:
-<<<<<<< HEAD
                 ReceiverInfo.objects.filter(user=user).update(is_default=False)
-=======
-                ReceiverInfo.objects.filter(user=user)[0].update(is_default=False)
->>>>>>> 9e9b7c276be9275ec835a78b35f143e72edcf3ee
                 ReceiverInfo.objects.create(receiver=receiver, address=address, receiver_phone=receiver_phone,
                                             is_default=is_default, user=user)
             else:
