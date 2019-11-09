@@ -127,8 +127,8 @@ def search(request):
 # 去结算/立即购买
 @check_login_status
 def buy_now(request):
-    if request.method != 'GET':
-        result = {'code': 40102, 'error': 'Please use get!'}
+    if request.method != 'POST':
+        result = {'code': 40102, 'error': 'Please use post!'}
         return JsonResponse(result)
     json_str = request.body
     if not json_str:

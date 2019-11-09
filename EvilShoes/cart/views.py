@@ -1,7 +1,8 @@
 import json
 from django.http import JsonResponse
 from django.shortcuts import render
-
+import redis
+from commodity.models import CommodityInfo
 from user.views import check_login_status
 from .models import *
 
@@ -62,34 +63,75 @@ def cart_view(request):
         cart_info = CartInfo.objects.filter(user=user.username, name=name)[0]
         cart_info.delete()
 
-    # 4.加入购物车
+    # 4.加入购物车--sql版本
+    # elif request.method == 'POST':
+    #     json_str = request.body
+    #     if not json_str:
+    #         result = {'code': 30106, 'error': 'Please give me data!'}
+    #         return JsonResponse(result)
+    #     json_obj = json.loads(json_str.decode())
+    #     name = json_obj['name']
+    #     price = json_obj['price']
+    #     count = json_obj['count']
+    #     if not name:
+    #         result = {'code': 30107, 'error': 'Please give me name of goods!'}
+    #         return JsonResponse(result)
+    #     if not price:
+    #         result = {'code': 30108, 'error': 'Please give me price!'}
+    #         return JsonResponse(result)
+    #     if not count:
+    #         result = {'code': 30109, 'error': 'Please give me count!'}
+    #         return JsonResponse(result)
+    #     try:
+    #         # 购物车中已经有这件商品则数量增加
+    #         cart_info = CartInfo.objects.get(user=user.username, name=name)
+    #         cart_info.count += count
+    #         cart_info.save()
+    #     except Exception as e:
+    #         print(e)
+    #         # 购物车中没有这件商品则增加商品
+    #         CartInfo.objects.create(user=user.username, name=name, unit_price=price, count=count)
+    #
+    #     result = {'code': 200}
+    #     return JsonResponse(result)
+
+    # 4.加入购物车--redis版本
     elif request.method == 'POST':
+        # 拿数据
         json_str = request.body
         if not json_str:
             result = {'code': 30106, 'error': 'Please give me data!'}
             return JsonResponse(result)
         json_obj = json.loads(json_str.decode())
-        name = json_obj['name']
-        price = json_obj['price']
+        commodity_id = json_obj['commodity_id']
         count = json_obj['count']
-        if not name:
-            result = {'code': 30107, 'error': 'Please give me name of goods!'}
-            return JsonResponse(result)
-        if not price:
-            result = {'code': 30108, 'error': 'Please give me price!'}
+        # 校验数据
+        if not commodity_id:
+            result = {'code': 30107, 'error': 'Please give me commodity_id!'}
             return JsonResponse(result)
         if not count:
-            result = {'code': 30109, 'error': 'Please give me count!'}
+            result = {'code': 30108, 'error': 'Please give me count!'}
             return JsonResponse(result)
         try:
-            # 购物车中已经有这件商品则数量增加
-            cart_info = CartInfo.objects.get(user=user.username, name=name)
-            cart_info.count += count
-            cart_info.save()
+            count = int(count)
         except Exception as e:
             print(e)
-            # 购物车中没有这件商品则增加商品
-            CartInfo.objects.create(user=user.username, name=name, unit_price=price, count=count)
-
-        result = {'code': 200}
+            result = {'code': 30109, 'error': '数据出错!'}
+            return JsonResponse(result)
+        try:
+            commodity = CommodityInfo.objects.get(id=commodity_id)
+        except CommodityInfo.DoesNotExist:
+            result = {'code': 30110, 'error': '商品不存在!'}
+            return JsonResponse(result)
+        # 添加购物车记录
+        conn = redis.Redis(host='127.0.0.1', port=6379, db=0)
+        cart_key = 'cart_%s' % user.username
+        # 先尝试从redis中
+        cart_count = conn.hget(cart_key, commodity_id)
+        if cart_count:
+            # 累加购物车中商品的数目
+            count += int(cart_count)
+        # 设置hash中commodity_id的值
+        conn.hset(cart_key, commodity_id, count)
+        result = {'code': 200, 'message': '添加成功！'}
         return JsonResponse(result)
