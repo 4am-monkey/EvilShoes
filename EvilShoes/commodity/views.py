@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 
 # Create your views here.
+from user.views import check_login_status
 from .models import CommodityInfo
 from .models import CommodityClassify
 
@@ -120,4 +121,32 @@ def search(request):
     result = {'code': 200, 'data': {'id': goods.id, 'name': goods.name, 'shelves': goods.shelves,
                                     'price': str(goods.price), 'description': goods.description,
                                     'image': str(goods.images)}}
+    return JsonResponse(result)
+
+
+# 去结算/立即购买
+@check_login_status
+def buy_now(request):
+    if request.method != 'GET':
+        result = {'code': 40102, 'error': 'Please use get!'}
+        return JsonResponse(result)
+    json_str = request.body
+    if not json_str:
+        result = {'code': 40103, 'error': 'Please give me data!'}
+        return JsonResponse(result)
+    json_obj = json.loads(json_str.decode())
+    commodities_id = json_obj['commodities_id']
+    commodities_info = []
+    for commodity_id in commodities_id:
+        commodity_info = {}
+        commodity = CommodityInfo.objects.filter(id=commodity_id)
+        commodity_info['id'] = commodity.id
+        commodity_info['name'] = commodity.name
+        commodity_info['shelves'] = commodity.shelves
+        commodity_info['price'] = str(commodity.price)
+        commodity_info['description'] = commodity.description
+        commodity_info['images'] = str(commodity.images)
+        commodities_info.append(commodity_info)
+
+    result = {'code': 200, 'commodities_info': commodities_info}
     return JsonResponse(result)

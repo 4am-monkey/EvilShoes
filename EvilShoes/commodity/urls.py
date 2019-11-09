@@ -15,6 +15,7 @@ urlpatterns = [
     # 127.0.0.1:8000/commodity/<commodityid>
     url(r'detail/(?P<commodityid>\w+)$', views.commodity_details),
 
-    url(r'^search$', views.search)
+    url(r'^search$', views.search),
 
+    url(r'^buy$', views.buy_now)
 ]

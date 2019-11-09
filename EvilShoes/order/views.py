@@ -3,8 +3,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 
 # Create your views here.
-
-
+from commodity.models import CommodityInfo
 from order.models import OrderInfo, OrderGoods
 from user.views import check_login_status
 
@@ -12,7 +11,7 @@ from user.views import check_login_status
 @check_login_status
 def order_view(request):
     user = request.user
-    # 生成订单(立即购买/去结算)
+    # 生成订单
     if request.method == 'POST':
         json_str = request.body
         if not json_str:
@@ -74,3 +73,6 @@ def order_view(request):
     elif request.method == 'DELETE':
         # 拿orderID
         pass
+
+
+
