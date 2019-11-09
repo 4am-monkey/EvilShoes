@@ -139,7 +139,7 @@ def buy_now(request):
     commodities_info = []
     for commodity_id in commodities_id:
         commodity_info = {}
-        commodity = CommodityInfo.objects.filter(id=commodity_id)
+        commodity = CommodityInfo.objects.filter(id=commodity_id)[0]
         commodity_info['id'] = commodity.id
         commodity_info['name'] = commodity.name
         commodity_info['shelves'] = commodity.shelves

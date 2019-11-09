@@ -23,7 +23,7 @@ def order_view(request):
         total_money = json_obj['total_money']
         commodities = json_obj['commodities']
         try:
-            order = OrderInfo.objects.create(user=user.username, addr_id=addr_id, total_amount=total_amount,
+            order = OrderInfo.objects.create(user=user, addr_id=addr_id, total_amount=total_amount,
                                              total_money=total_money)
         except Exception as e:
             print(e)
@@ -35,7 +35,7 @@ def order_view(request):
             name = commodity['name']
             count = commodity['count']
             price = commodity['price']
-            OrderGoods.objects.create(order=order.id, name=name, count=count, price=price)
+            OrderGoods.objects.create(order=order, name=name, count=count, price=price)
 
         result = {'code': 200, 'data': 'Create successfully!'}
         return JsonResponse(result)
@@ -46,7 +46,7 @@ def order_view(request):
         #     {'id': 1, 'addr_id': 1, 'total_amount': 1, 'total_money': 1, 'create_time': 111, 'status': 0,
         #      'commodities': [{'name': 'xxx', 'price': 1, 'count': 1}, {}, {}]}, {}, {}]
         #           }
-        orders = OrderInfo.objects.filter(user=user.username)
+        orders = OrderInfo.objects.filter(user=user)
         all_order = []
         for order in orders:
             o = {}
@@ -56,7 +56,8 @@ def order_view(request):
             o['total_money'] = order.total_money
             o['create_time'] = order.create_time
             o['status'] = order.status
-            all_goods = OrderGoods.objects.filter(order=id)
+            all_goods = OrderGoods.objects.filter(order=order)
+            # print('--------', order)
             o['commodities'] = []
             for goods in all_goods:
                 g = {}
@@ -64,6 +65,8 @@ def order_view(request):
                 g['price'] = goods.price
                 g['count'] = goods.count
                 o['commodities'].append(g)
+
+            print('===========', o['commodities'])
             all_order.append(o)
 
         result = {'code': 200, 'all_order': all_order}

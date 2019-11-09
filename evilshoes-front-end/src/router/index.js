@@ -60,15 +60,15 @@ export default new Router({
     },
     // 购物车
     {
-      path: '/cart',
+      path: '/cart/:username',
       component: Cart,
       name: '购物车'
     },
     // 订单
     {
-      path: '/order',
+      path: '/order/:goods_info',
       component: Order,
-      name: '订单列表'
+      name: '订单',
     },
   ],
   mode: "history"
