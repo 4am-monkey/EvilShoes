@@ -127,7 +127,7 @@ def search(request):
 # 去结算/立即购买
 @check_login_status
 def buy_now(request):
-    if request.method != 'GET':
+    if request.method != 'POST':
         result = {'code': 40102, 'error': 'Please use get!'}
         return JsonResponse(result)
     json_str = request.body
@@ -139,7 +139,7 @@ def buy_now(request):
     commodities_info = []
     for commodity_id in commodities_id:
         commodity_info = {}
-        commodity = CommodityInfo.objects.filter(id=commodity_id)
+        commodity = CommodityInfo.objects.filter(id=commodity_id)[0]
         commodity_info['id'] = commodity.id
         commodity_info['name'] = commodity.name
         commodity_info['shelves'] = commodity.shelves

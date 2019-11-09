@@ -15,7 +15,7 @@
             <span>数量</span><el-input-number v-model="num" controls-position="right" @blur="handleBlur" :min="1" :max="10"></el-input-number>
           </div>
           <div class="btn">
-            <el-button type="primary">立即购买</el-button>
+            <el-button type="primary" @click="buy">立即购买</el-button>
             <el-button type="primary" icon="el-icon-shopping-cart-2">加入购物车</el-button>
             <el-button type="primary" icon="el-icon-star-off">收藏</el-button>
           </div>
@@ -57,6 +57,9 @@ export default {
     },
     goBack(){
       this.$router.go(-1)
+    },
+    buy(){
+      this.$router.push({path: '/order/' + this.c_id + '_' + this.num});
     }
   }
 };

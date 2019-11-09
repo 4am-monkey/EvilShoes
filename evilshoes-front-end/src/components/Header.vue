@@ -104,7 +104,7 @@ export default {
     handleCommand(command){
       if(command == '1'){
         if(this.$route.path != '/user/' + this.username){
-          this.$router.push({path:'user/' + this.username});
+          this.$router.push({path:'/user/' + this.username});
         }
       }else{
         window.localStorage.removeItem('evil_token');
