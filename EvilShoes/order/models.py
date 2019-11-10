@@ -37,14 +37,10 @@ class OrderInfo(models.Model):
 
 
 class OrderGoods(models.Model):
-    goods_id = models.IntegerField(verbose_name="商品名称", default=0)
+    name = models.CharField(verbose_name="商品名称", max_length=180)
     price = models.DecimalField(verbose_name='商品价格', max_digits=6, decimal_places=2)
     # desc = models.CharField(verbose_name='描述', max_length=1000, null=True)
     count = models.IntegerField(verbose_name="数量", null=True, default=0)
-    # color = models.CharField('颜色', max_length=50)
-    # spec = models.CharField('规格', max_length=50)
-    # goodsimg = models.ImageField("产品图", upload_to="ordersgood", default="normal.png")
-    # trprice = models.DecimalField('商品实际', max_digits=8, decimal_places=2)
     order = models.ForeignKey(OrderInfo)
 
     class Meta:

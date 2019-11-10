@@ -45,8 +45,8 @@ def order_view(request):
             except CommodityInfo.DoesNotExist:
                 result = {'code': 40102, 'error': '商品不存在!'}
                 return JsonResponse(result)
-
-            OrderGoods.objects.create(order=order, goods_id=id, count=count, price=price)
+            commodity_name = com.name
+            OrderGoods.objects.create(order=order, name=commodity_name, count=count, price=price)
             # 更新库存
             com.storage -= int(count)
             com.save()
@@ -62,29 +62,32 @@ def order_view(request):
         #      'commodities': [{'name': 'xxx', 'price': 1, 'count': 1}, {}, {}]}, {}, {}]
         #           }
         orders = OrderInfo.objects.filter(user=user)
-        all_order = []
+        # all_order = []
         for order in orders:
-            o = {}
-            o['id'] = order.id
-            o['addr_id'] = order.addr_id
-            o['total_amount'] = order.total_amount
-            o['total_money'] = order.total_money
-            o['create_time'] = order.create_time
-            o['status'] = order.status
-            all_goods = OrderGoods.objects.filter(order=order)
-            # print('--------', order)
-            o['commodities'] = []
-            for goods in all_goods:
-                g = {}
-                g['goods_id'] = goods.goods_id
-                g['price'] = goods.price
-                g['count'] = goods.count
-                o['commodities'].append(g)
-
-            print('===========', o['commodities'])
-            all_order.append(o)
-
-        result = {'code': 200, 'all_order': all_order}
+            # o = {}
+            # o['id'] = order.id
+            # o['addr_id'] = order.addr_id
+            # o['total_amount'] = order.total_amount
+            # o['total_money'] = order.total_money
+            # o['create_time'] = order.create_time
+            # o['status'] = order.status
+            # all_goods = OrderGoods.objects.filter(order=order)
+            # # print('--------', order)
+            # o['commodities'] = []
+            # for goods in all_goods:
+            #     g = {}
+            #     g['goods_id'] = goods.goods_id
+            #     g['price'] = goods.price
+            #     g['count'] = goods.count
+            #
+            #     o['commodities'].append(g)
+            #
+            # print('===========', o['commodities'])
+            # all_order.append(o)
+            order_commodities = OrderGoods.objects.filter(order=order)
+            order.order_commodities = order_commodities
+        # result = {'code': 200, 'all_order': all_order}
+        result = {'code': 200, 'orders': orders}
         return JsonResponse(result)
 
     # 删除订单
