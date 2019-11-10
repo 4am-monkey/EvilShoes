@@ -114,13 +114,26 @@ def search(request):
     if not key:
         result = {'code': 20107, 'error': 'Please give me the key!'}
         return JsonResponse(result)
-    goods = CommodityInfo.objects.filter(name__icontains=key)[0]
+    # goods = CommodityInfo.objects.filter(name__icontains=key)[0]
+    # if not goods:
+    #     result = {'code': 20108, 'error': "Sorry,we don't have this goods!"}
+    #     return JsonResponse(result)
+    goods = CommodityInfo.objects.filter(name__icontains=key)
     if not goods:
         result = {'code': 20108, 'error': "Sorry,we don't have this goods!"}
         return JsonResponse(result)
-    result = {'code': 200, 'data': {'id': goods.id, 'name': goods.name, 'shelves': goods.shelves,
-                                    'price': str(goods.price), 'description': goods.description,
-                                    'image': str(goods.images)}}
+    # goods = goods[0]
+    commodities = []
+    for commodity in goods:
+        c = {}
+        c['id'] = commodity.id
+        c['name'] = commodity.name
+        c['shelves'] = commodity.shelves
+        c['price'] = str(commodity.price)
+        c['description'] = commodity.description
+        c['images'] = str(commodity.images)
+        commodities.append(c)
+    result = {'code': 200, 'data': commodities}
     return JsonResponse(result)
 
 

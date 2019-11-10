@@ -13,6 +13,7 @@ import CDetails from "@/pages/commodity/CDetails.vue"
 import Collection from "@/pages/Collection.vue"
 import Cart from "@/pages/Cart.vue"
 import Order from "@/pages/Order.vue"
+import Search from "@/pages/Search.vue"
 
 
 Vue.use(Router)
@@ -70,6 +71,12 @@ export default new Router({
       component: Order,
       name: '订单',
     },
+    // 搜索
+    {
+      'path': '/search/:key',
+      component: Search,
+      name: '搜索'
+    }
   ],
   mode: "history"
 })

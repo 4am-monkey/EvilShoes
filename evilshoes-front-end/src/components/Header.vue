@@ -14,7 +14,7 @@
       <el-col :span="8">
         <div class="grid-content">
           <el-input v-model="ipt_search" placeholder="搜索邪网"></el-input>
-          <el-button type="primary" icon="el-icon-search"></el-button>
+          <el-button type="primary" icon="el-icon-search" @click="search"></el-button>
         </div>
       </el-col>
       <el-col :span="8">
@@ -73,8 +73,12 @@ export default {
       online: this.global.online,
       nickname: "",
       username: '',
-      ipt_search: ""
+      ipt_search: '',
     };
+  },
+  watch: {
+    // 如果路由有变化，会再次执行该方法
+    $route: "inputChange"
   },
   mounted: function() {
     var AUTH_TOKEN = window.localStorage.getItem("evil_token");
@@ -112,6 +116,16 @@ export default {
         window.localStorage.removeItem('evil_username');
         this.$router.push({ path: '/'});
         this.$router.go(0);
+      }
+    },
+    search(){
+      this.$router.push('/search/' + encodeURIComponent(this.ipt_search));
+    },
+    inputChange(){
+      if(this.$route.name == '搜索'){
+        this.ipt_search = this.$route.params.key
+      }else{
+        this.ipt_search = ''
       }
     }
   }
