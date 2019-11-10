@@ -1,5 +1,7 @@
 import json
+import redis
 from django.http import JsonResponse
+from django.db import transaction
 from django.shortcuts import render
 
 # Create your views here.
@@ -9,8 +11,11 @@ from user.views import check_login_status
 
 
 @check_login_status
+@transaction.atomic
 def order_view(request):
     user = request.user
+    conn = redis.Redis(host='127.0.0.1', port=6379, db=0)
+    cart_key = 'cart_%s' % user.username
     # 生成订单
     if request.method == 'POST':
         json_str = request.body
@@ -19,12 +24,12 @@ def order_view(request):
             return JsonResponse(result)
         json_obj = json.loads(json_str.decode())
         addr_id = json_obj['addr_id']
-        total_amount = json_obj['total_amount']
-        total_money = json_obj['total_money']
         commodities = json_obj['commodities']
+        total_price = json_obj['total_price']
+        total_count = json_obj['total_count']
         try:
-            order = OrderInfo.objects.create(user=user, addr_id=addr_id, total_amount=total_amount,
-                                             total_money=total_money)
+            order = OrderInfo.objects.create(user=user, addr_id=addr_id, total_count=total_count,
+                                             total_price=total_price)
         except Exception as e:
             print(e)
             print('create error!')
@@ -32,11 +37,21 @@ def order_view(request):
             return JsonResponse(result)
 
         for commodity in commodities:
-            name = commodity['name']
+            id = commodity['id']
             count = commodity['count']
             price = commodity['price']
-            OrderGoods.objects.create(order=order, name=name, count=count, price=price)
+            try:
+                com = CommodityInfo.objects.get(id=id)
+            except CommodityInfo.DoesNotExist:
+                result = {'code': 40102, 'error': '商品不存在!'}
+                return JsonResponse(result)
 
+            OrderGoods.objects.create(order=order, goods_id=id, count=count, price=price)
+            # 更新库存
+            com.storage -= int(count)
+            com.save()
+            # 清除用户购物车中对应的记录
+            conn.hdel(cart_key, id)
         result = {'code': 200, 'data': 'Create successfully!'}
         return JsonResponse(result)
 
@@ -61,7 +76,7 @@ def order_view(request):
             o['commodities'] = []
             for goods in all_goods:
                 g = {}
-                g['name'] = goods.name
+                g['goods_id'] = goods.goods_id
                 g['price'] = goods.price
                 g['count'] = goods.count
                 o['commodities'].append(g)
@@ -76,6 +91,3 @@ def order_view(request):
     elif request.method == 'DELETE':
         # 拿orderID
         pass
-
-
-

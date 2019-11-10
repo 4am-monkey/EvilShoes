@@ -99,6 +99,9 @@ def cart_view(request):
         except CommodityInfo.DoesNotExist:
             result = {'code': 30104, 'error': '商品不存在!'}
             return JsonResponse(result)
+        if count > commodity.storage:
+            result = {'code': 30105, 'error': '库存不足！'}
+            return JsonResponse(result)
         # 更新购物车记录
         conn.hset(cart_key, commodity_id, count)
         result = {'code': 200, 'message': '更新成功！'}
@@ -122,17 +125,17 @@ def cart_view(request):
     elif request.method == 'DELETE':
         json_str = request.body
         if not json_str:
-            result = {'code': 30105, 'error': 'Please give me data!'}
+            result = {'code': 30106, 'error': 'Please give me data!'}
             return JsonResponse(result)
         json_obj = json.loads(json_str.decode())
         commodity_id = json_obj['commodity_id']
         if not commodity_id:
-            result = {'code': 30106, 'error': 'Please give me commodity_id!'}
+            result = {'code': 30107, 'error': 'Please give me commodity_id!'}
             return JsonResponse(result)
         try:
             commodity = CommodityInfo.objects.get(id=commodity_id)
         except CommodityInfo.DoesNotExist:
-            result = {'code': 30107, 'error': '商品不存在！'}
+            result = {'code': 30108, 'error': '商品不存在！'}
             return JsonResponse(result)
         # 删除
         conn.hdel(cart_key, commodity_id)
@@ -176,35 +179,39 @@ def cart_view(request):
         # 拿数据
         json_str = request.body
         if not json_str:
-            result = {'code': 30106, 'error': 'Please give me data!'}
+            result = {'code': 30109, 'error': 'Please give me data!'}
             return JsonResponse(result)
         json_obj = json.loads(json_str.decode())
         commodity_id = json_obj['commodity_id']
         count = json_obj['count']
         # 校验数据
         if not commodity_id:
-            result = {'code': 30107, 'error': 'Please give me commodity_id!'}
+            result = {'code': 301010, 'error': 'Please give me commodity_id!'}
             return JsonResponse(result)
         if not count:
-            result = {'code': 30108, 'error': 'Please give me count!'}
+            result = {'code': 301011, 'error': 'Please give me count!'}
             return JsonResponse(result)
         try:
             count = int(count)
         except Exception as e:
             print(e)
-            result = {'code': 30109, 'error': '数据出错!'}
+            result = {'code': 301012, 'error': '数据出错!'}
             return JsonResponse(result)
         try:
             commodity = CommodityInfo.objects.get(id=commodity_id)
         except CommodityInfo.DoesNotExist:
-            result = {'code': 30110, 'error': '商品不存在!'}
+            result = {'code': 30113, 'error': '商品不存在!'}
             return JsonResponse(result)
+
         # 添加购物车记录
         # 先尝试从redis中
         cart_count = conn.hget(cart_key, commodity_id)
         if cart_count:
             # 累加购物车中商品的数目
             count += int(cart_count)
+        if count > commodity.storage:
+            result = {'code': 30114, 'error': '库存不足!'}
+            return JsonResponse(result)
         # 设置hash中commodity_id的值
         conn.hset(cart_key, commodity_id, count)
         result = {'code': 200, 'message': '添加成功！'}

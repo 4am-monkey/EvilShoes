@@ -18,8 +18,8 @@ class OrderInfo(models.Model):
     user = models.ForeignKey(UserInfo)
     id = models.AutoField(verbose_name='订单ID', primary_key=True)
     addr_id = models.IntegerField(verbose_name='收货地址ID')
-    total_amount = models.IntegerField(verbose_name='订单商品总数')
-    total_money = models.DecimalField(verbose_name='订单总价', max_digits=6, decimal_places=2)
+    total_count = models.IntegerField(verbose_name='订单商品总数')
+    total_price = models.DecimalField(verbose_name='订单总价', max_digits=6, decimal_places=2)
     create_time = models.DateTimeField(verbose_name='订单创建时间', auto_now_add=True)
     status = models.IntegerField(verbose_name='订单状态', choices=ORDER_STATUS, default=0)
 
@@ -37,7 +37,7 @@ class OrderInfo(models.Model):
 
 
 class OrderGoods(models.Model):
-    name = models.CharField(verbose_name="商品名称", max_length=180)
+    goods_id = models.IntegerField(verbose_name="商品名称", default=0)
     price = models.DecimalField(verbose_name='商品价格', max_digits=6, decimal_places=2)
     # desc = models.CharField(verbose_name='描述', max_length=1000, null=True)
     count = models.IntegerField(verbose_name="数量", null=True, default=0)
