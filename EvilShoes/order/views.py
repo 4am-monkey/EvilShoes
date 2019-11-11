@@ -9,9 +9,10 @@ from commodity.models import CommodityInfo
 from order.models import OrderInfo, OrderGoods
 from user.views import check_login_status
 
+from django.core import serializers
+
 
 @check_login_status
-@transaction.atomic
 def order_view(request):
     user = request.user
     # conn = redis.Redis(host='127.0.0.1', port=6379, db=0)
@@ -72,7 +73,6 @@ def order_view(request):
             o['create_time'] = order.create_time
             o['status'] = order.status
             all_goods = OrderGoods.objects.filter(order=order)
-            # print('--------', order)
             o['commodities'] = []
             for goods in all_goods:
                 g = {}
@@ -80,13 +80,10 @@ def order_view(request):
                 g['price'] = goods.price
                 g['count'] = goods.count
                 o['commodities'].append(g)
-
-            print('===========', o['commodities'])
             all_order.append(o)
             # order_commodities = OrderGoods.objects.filter(order=order)
             # order.order_commodities = order_commodities
         result = {'code': 200, 'all_order': all_order}
-        # result = {'code': 200, 'orders': orders}
         return JsonResponse(result)
 
     # 删除订单
