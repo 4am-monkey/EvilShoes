@@ -13,6 +13,7 @@ from user.views import check_login_status
 from django.core import serializers
 
 
+# @transaction
 @check_login_status
 def order_view(request):
     user = request.user
@@ -43,7 +44,7 @@ def order_view(request):
             count = commodity['count']
             price = commodity['price']
             try:
-                com = CommodityInfo.objects.get(id=id)
+                com = CommodityInfo.objects.select_for_update.get(id=id)
             except CommodityInfo.DoesNotExist:
                 result = {'code': 40102, 'error': '商品不存在!'}
                 return JsonResponse(result)
