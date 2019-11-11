@@ -7,14 +7,13 @@ from django.shortcuts import render
 # Create your views here.
 from commodity.models import CommodityInfo
 from order.models import OrderInfo, OrderGoods
+from user.models import ReceiverInfo
 from user.views import check_login_status
 
 from django.core import serializers
 
 
-
 @check_login_status
-@transaction.atomic
 def order_view(request):
     user = request.user
     # conn = redis.Redis(host='127.0.0.1', port=6379, db=0)
@@ -69,32 +68,25 @@ def order_view(request):
         for order in orders:
             o = {}
             o['id'] = order.id
-            o['addr_id'] = order.addr_id
+            # o['addr_id'] = order.addr_id
             o['total_amount'] = order.total_count
             o['total_money'] = order.total_price
             o['create_time'] = order.create_time
             o['status'] = order.status
+            address = ReceiverInfo.objects.filter(id=order.addr_id)
+            o['addr_info'] = serializers.serialize('json', address)
             all_goods = OrderGoods.objects.filter(order=order)
-            # print('--------', order)
             o['commodities'] = []
             for goods in all_goods:
                 g = {}
                 g['name'] = goods.name
                 g['price'] = goods.price
                 g['count'] = goods.count
-
                 o['commodities'].append(g)
-
-            # print('===========', o['commodities'])
             all_order.append(o)
-        #     order_commodities = OrderGoods.objects.filter(order=order)
-        #     order.order_commodities = order_commodities
-
+            # order_commodities = OrderGoods.objects.filter(order=order)
+            # order.order_commodities = order_commodities
         result = {'code': 200, 'all_order': all_order}
-        # print('======', orders[0].order_commodities[0].price)
-
-        # orders = serializers.serialize("json", orders)
-        # result = {'code': 200, 'orders': orders}
         return JsonResponse(result)
 
     # 删除订单
