@@ -417,11 +417,13 @@ export default {
         if (response.data.code == "200") {
           var orders = response.data.all_order;
           for (var i = 0; i < orders.length; i++) {
+            var addr = JSON.parse(orders[i].addr_info);
             var order = {};
             order.id = orders[i].id;
             order.created_time = this.formateDate(orders[i].create_time);
             order.status = STATUS[orders[i].status];
             order.money = orders[i].total_money;
+            order.addr = addr[0].fields.address;
             order.commodities = [];
             for (var j = 0; j < orders[i].commodities.length; j++) {
               var goods = {};
