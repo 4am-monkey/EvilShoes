@@ -24,7 +24,7 @@
         <div v-for="cart in carts" :key="cart.id" class="carts">
           <div>
             <img :src="cart.img" style="width: 60px; height: 60px;" alt />
-            <div>{{ cart.title }}</div>
+            <div @click="toDetails(cart.id)">{{ cart.title }}</div>
           </div>
           <div>{{ cart.price }}</div>
           <div>
@@ -53,7 +53,7 @@
 </template>
 
 <script>
-const goodsOptions = [0, 1];
+var goodsOptions = [];
 export default {
   name: "x-cart",
   data() {
@@ -64,27 +64,27 @@ export default {
       isIndeterminate: false,
       // ccount: [1, 2],
       carts: [
-        {
-          id: 0,
-          c_id: 1001,
-          img:
-            "http://127.0.0.1:8000/media/commodity/20000_3424764_0__solar.jpg",
-          title: "小白鞋",
-          price: 100,
-          count: 2,
-          sum: 200
-        },
-        {
-          id: 1,
-          c_id: 1002,
-          img:
-            "http://127.0.0.1:8000/media/commodity/20000_3424764_0__solar.jpg",
-          title:
-            "小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋",
-          price: 50,
-          count: 3,
-          sum: 150
-        }
+        // {
+        //   id: 0,
+        //   c_id: 1001,
+        //   img:
+        //     "http://127.0.0.1:8000/media/commodity/20000_3424764_0__solar.jpg",
+        //   title: "小白鞋",
+        //   price: 100,
+        //   count: 2,
+        //   sum: 200
+        // },
+        // {
+        //   id: 1,
+        //   c_id: 1002,
+        //   img:
+        //     "http://127.0.0.1:8000/media/commodity/20000_3424764_0__solar.jpg",
+        //   title:
+        //     "小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋",
+        //   price: 50,
+        //   count: 3,
+        //   sum: 150
+        // }
       ],
       total_price: (0).toFixed(2),
 
@@ -116,20 +116,45 @@ export default {
       this.countSum();
     },
     handleChange(value) {
-      this.carts[value].sum = this.carts[value].price * this.carts[value].count;
-      this.countSum();
+      var AUTH_TOKEN = window.localStorage.getItem('evil_token');
+      var params = {
+        commodity_id: this.carts[value].c_id,
+        count: this.carts[value].count
+      }
+      this.$axios({
+        method: 'put',
+        url: 'http://127.0.0.1:8000/cart/',
+        data: params,
+        headers: {Authorization: AUTH_TOKEN}
+      }).then(response => {
+        if(response.data.code == '200'){
+          this.carts[value].sum = this.carts[value].price * this.carts[value].count;
+          this.countSum();
+        }else if(response.data.code == '30105'){
+          // 
+          window.console.log('库存不足！')
+        }
+      });
+      // this.carts[value].sum = this.carts[value].price * this.carts[value].count;
+      // this.countSum();
     },
     countOrder(){
 
     },
     countSum(){
       this.total_price = 0;
-      this.total_price = parseFloat(this.total_price);
       for(var i = 0; i < this.checkedGoods.length; i++){
         this.total_price += this.carts[this.checkedGoods[i]].sum;
       }
       this.total_price = this.total_price.toFixed(2);
+    },
+    toDetails(id){
+      this.$router.push({path: '/details/' + this.carts[id].c_id});
     }
+  },
+  beforeCreate(){
+    goodsOptions = [];
+    this.carts = [];
   },
   mounted() {
     let AUTH_TOKEN = window.localStorage.getItem("evil_token");
@@ -138,10 +163,24 @@ export default {
       url: "http://127.0.0.1:8000/cart/",
       headers: { Authorization: AUTH_TOKEN }
     }).then(response => {
-      window.console.log(response);
-      // this.tableData = res.data.data;
+      // window.console.log(response.data);
+      var commodities = JSON.parse(response.data.commodities);
+      // var commodities = response.data.commodities;
+      var others = response.data.others;
+      for(var i = 0; i < commodities.length; i++){
+        var cart = {};
+        cart.id = i;
+        cart.c_id = commodities[i].pk;
+        cart.img = 'http://127.0.0.1:8000/media/' + commodities[i].fields.images;
+        cart.title = commodities[i].fields.name;
+        cart.price = commodities[i].fields.price;
+        cart.count = others[i].count;
+        cart.sum = others[i].amount;
+        this.carts.push(cart);
+        goodsOptions.push(i);
+      }
     });
-    window.console.log(unescape('\u5b89\u8e0fNASA\u7537\u978b\u8dd1\u6b65\u978b2019\u65b0\u6b3eSEEED\u5168\u638c\u6c14\u57ab\u978b\u7537\u58eb\u8fd0\u52a8\u978b\u5b98\u7f51\u65d7\u8230'))
+    
   }
 };
 </script>
@@ -221,12 +260,18 @@ export default {
 .x-cart .cright .carts div:nth-child(1) img {
   display: block;
   float: left;
+  cursor: pointer;
 }
 .x-cart .cright .carts div:nth-child(1) div {
   margin-left: 10px;
   /* float: left; */
   /* border: solid 1px red; */
   width: 80%;
+  cursor: pointer;
+}
+.x-cart .cright .carts div:nth-child(1) div:hover {
+  color: red;
+  text-decoration: underline;
 }
 .x-cart .cright .carts div:nth-child(2) {
   float: left;
