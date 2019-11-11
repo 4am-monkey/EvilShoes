@@ -17,8 +17,8 @@ from django.core import serializers
 @check_login_status
 def order_view(request):
     user = request.user
-    # conn = redis.Redis(host='127.0.0.1', port=6379, db=0)
-    # cart_key = 'cart_%s' % user.username
+    conn = redis.Redis(host='127.0.0.1', port=6379, db=0)
+    cart_key = 'cart_%s' % user.username
     # 生成订单
     if request.method == 'POST':
         json_str = request.body
@@ -44,7 +44,7 @@ def order_view(request):
             count = commodity['count']
             price = commodity['price']
             try:
-                com = CommodityInfo.objects.select_for_update.get(id=id)
+                com = CommodityInfo.objects.get(id=id)
             except CommodityInfo.DoesNotExist:
                 result = {'code': 40102, 'error': '商品不存在!'}
                 return JsonResponse(result)
@@ -53,8 +53,8 @@ def order_view(request):
             # 更新库存
             com.storage -= int(count)
             com.save()
-            # # 清除用户购物车中对应的记录
-            # conn.hdel(cart_key, id)
+            # 清除用户购物车中对应的记录
+            conn.hdel(cart_key, id)
         result = {'code': 200, 'data': 'Create successfully!'}
         return JsonResponse(result)
 

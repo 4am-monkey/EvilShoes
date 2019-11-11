@@ -14,7 +14,7 @@ from django.core import serializers
 @check_login_status
 def cart_view(request):
     user = request.user
-    conn = redis.Redis(host='127.0.0.1', port=6379, db=0, password='123456')
+    conn = redis.Redis(host='127.0.0.1', port=6379, db=0)
     cart_key = 'cart_%s' % user.username
     # 1.显示购物车信息--sql版本
     # if request.method == 'GET':
