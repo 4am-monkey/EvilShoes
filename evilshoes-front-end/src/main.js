@@ -5,6 +5,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import global from './assets/global.js'
 
+
 import axios from 'axios'
 Vue.prototype.$axios = axios
 Vue.prototype.global = global
@@ -19,6 +20,8 @@ Vue.use(ElementUI);
 Vue.config.productionTip = false
 
 export const eventBus = new Vue()
+
+
 
 new Vue({
   router,

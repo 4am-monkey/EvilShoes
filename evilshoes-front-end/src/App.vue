@@ -4,7 +4,7 @@
     <el-row class="bj">
       <el-col :span="2"></el-col>
       <el-col :span="20">
-        <router-view></router-view>
+        <router-view :v-wechat-title='$route.meta.title'></router-view>
       </el-col>
       <el-col :span="2"></el-col>
     </el-row>
