@@ -6,13 +6,15 @@ from commodity.models import CommodityInfo
 from user.views import check_login_status
 from .models import *
 
+from django.core import serializers
+
 
 # Create your views here.
 
 @check_login_status
 def cart_view(request):
     user = request.user
-    conn = redis.Redis(host='127.0.0.1', port=6379, db=0)
+    conn = redis.Redis(host='127.0.0.1', port=6379, db=0, password='123456')
     cart_key = 'cart_%s' % user.username
     # 1.显示购物车信息--sql版本
     # if request.method == 'GET':
@@ -37,17 +39,20 @@ def cart_view(request):
         # {'商品ID':商品数量}
         cart_dict = conn.hgetall(cart_key)
         commodities = []
+        others = []
         # 遍历字典获取商品信息
         for commodity_id, count in cart_dict.items():
             # 根据商品ID获取商品信息
             commodity = CommodityInfo.objects.filter(id=commodity_id)[0]
+            commodities.append(commodity)
+            other = {}
             # 商品小计
             amount = commodity.price * int(count)
             # 给commodity动态增加属性
-            commodity.amount = amount
-            commodity.count = count
-            commodities.append(commodity)
-        result = {'code': 200, 'commodities': commodities}
+            other['amount'] = amount
+            other['count'] = int(count)
+            others.append(other)
+        result = {'code': 200, 'commodities': serializers.serialize("json", commodities), 'others': others}
         return JsonResponse(result)
 
 
