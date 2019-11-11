@@ -51,9 +51,10 @@ export default {
     });
   },
   methods: {
-    handleBlur(value){
-      value = 1
-      this.num = value
+    handleBlur(){
+      if(this.num === undefined){
+        this.num = 1
+      }
     },
     goBack(){
       this.$router.go(-1)

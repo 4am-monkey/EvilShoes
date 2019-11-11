@@ -7,7 +7,9 @@
       <el-col :span="4">
         <div class="grid-content">
           <div class="logo">
-            <router-link to="/">邪</router-link>
+            <router-link to="/">
+              <img src="../assets/evil_logo2.jpg" style="width: 90px; height: 40px;" alt="">
+            </router-link>
           </div>
         </div>
       </el-col>
@@ -23,7 +25,7 @@
           <template v-if="online">
             <div class="logined">
               <div class="cart">
-                <router-link to="/cart">购物车</router-link>
+                <router-link :to="'/cart/' + username">购物车</router-link>
               </div>
               <div>
                 <el-dropdown  @command="handleCommand">
@@ -151,8 +153,8 @@ export default {
   line-height: 40px;
 }
 .x-header .logo {
-  width: 90px;
-  height: 40px;
+  /* width: 90px;
+  height: 40px; */
   /* border: solid 1px white; */
   color: white;
   font-size: 36px;

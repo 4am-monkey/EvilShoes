@@ -165,6 +165,7 @@ export default {
           var goods = response.data.commodities_info;
           for (var m = 0; m < goods.length; m++) {
             var commodity = {};
+            commodity.id = goods[m].id;
             commodity.img = goods[m].images;
             commodity.title = goods[m].name;
             commodity.price = goods[m].price;
@@ -199,6 +200,7 @@ export default {
       var commodities = [];
       for (var i = 0; i < this.goodsInfo.length; i++) {
         var goods = {};
+        goods.id = this.goodsInfo[i].id;
         goods.name = this.goodsInfo[i].title;
         goods.count = this.goodsInfo[i].count;
         goods.price = this.goodsInfo[i].price;
