@@ -7,6 +7,7 @@ from django.shortcuts import render
 # Create your views here.
 from commodity.models import CommodityInfo
 from order.models import OrderInfo, OrderGoods
+from user.models import ReceiverInfo
 from user.views import check_login_status
 
 from django.core import serializers
@@ -67,11 +68,13 @@ def order_view(request):
         for order in orders:
             o = {}
             o['id'] = order.id
-            o['addr_id'] = order.addr_id
+            # o['addr_id'] = order.addr_id
             o['total_amount'] = order.total_count
             o['total_money'] = order.total_price
             o['create_time'] = order.create_time
             o['status'] = order.status
+            address = ReceiverInfo.objects.filter(id=order.addr_id)
+            o['addr_info'] = serializers.serialize('json', address)
             all_goods = OrderGoods.objects.filter(order=order)
             o['commodities'] = []
             for goods in all_goods:
