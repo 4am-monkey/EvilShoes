@@ -38,7 +38,7 @@
             ></el-input-number>
           </div>
           <div>{{ cart.sum }}</div>
-          <div>删除</div>
+          <div @click="delCart(cart.c_id)">删除</div>
         </div>
       </div>
       <div class="hj">
@@ -62,33 +62,8 @@ export default {
       checkedGoods: [],
       goods: goodsOptions,
       isIndeterminate: false,
-      // ccount: [1, 2],
-      carts: [
-        // {
-        //   id: 0,
-        //   c_id: 1001,
-        //   img:
-        //     "http://127.0.0.1:8000/media/commodity/20000_3424764_0__solar.jpg",
-        //   title: "小白鞋",
-        //   price: 100,
-        //   count: 2,
-        //   sum: 200
-        // },
-        // {
-        //   id: 1,
-        //   c_id: 1002,
-        //   img:
-        //     "http://127.0.0.1:8000/media/commodity/20000_3424764_0__solar.jpg",
-        //   title:
-        //     "小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋小皮鞋",
-        //   price: 50,
-        //   count: 3,
-        //   sum: 150
-        // }
-      ],
-      total_price: (0).toFixed(2),
-
-      //
+      carts: [],
+      total_price: (0).toFixed(2)
     };
   },
 
@@ -116,71 +91,106 @@ export default {
       this.countSum();
     },
     handleChange(value) {
-      var AUTH_TOKEN = window.localStorage.getItem('evil_token');
+      var AUTH_TOKEN = window.localStorage.getItem("evil_token");
       var params = {
         commodity_id: this.carts[value].c_id,
         count: this.carts[value].count
-      }
+      };
       this.$axios({
-        method: 'put',
-        url: 'http://127.0.0.1:8000/cart/',
+        method: "put",
+        url: "http://127.0.0.1:8000/cart/",
         data: params,
-        headers: {Authorization: AUTH_TOKEN}
+        headers: { Authorization: AUTH_TOKEN }
       }).then(response => {
-        if(response.data.code == '200'){
-          this.carts[value].sum = this.carts[value].price * this.carts[value].count;
+        if (response.data.code == "200") {
+          this.carts[value].sum =
+            this.carts[value].price * this.carts[value].count;
           this.countSum();
-        }else if(response.data.code == '30105'){
-          // 
-          window.console.log('库存不足！')
+        } else if (response.data.code == "30105") {
+          //
+          window.console.log("库存不足！");
         }
       });
-      // this.carts[value].sum = this.carts[value].price * this.carts[value].count;
-      // this.countSum();
     },
-    countOrder(){
-
+    countOrder() {
+      if (this.checkedGoods.length == 0) {
+        return;
+      }
+      var ids = "";
+      for (var i = 0; i < this.checkedGoods.length; i++) {
+        var index = this.checkedGoods[i];
+        var c_id = this.carts[index].c_id.toString();
+        var count = this.carts[index].count.toString();
+        ids += c_id + "_" + count + "&";
+      }
+      ids = ids.slice(0, -1);
+      this.$router.push({ path: "/order/" + ids });
     },
-    countSum(){
+    countSum() {
       this.total_price = 0;
-      for(var i = 0; i < this.checkedGoods.length; i++){
-        this.total_price += this.carts[this.checkedGoods[i]].sum;
+      for (var i = 0; i < this.checkedGoods.length; i++) {
+        this.total_price += parseFloat(this.carts[this.checkedGoods[i]].sum);
       }
       this.total_price = this.total_price.toFixed(2);
     },
-    toDetails(id){
-      this.$router.push({path: '/details/' + this.carts[id].c_id});
+    toDetails(id) {
+      this.$router.push({ path: "/details/" + this.carts[id].c_id });
+    },
+    delCart(id) {
+      var AUTH_TOKEN = window.localStorage.getItem("evil_token");
+      var params = {
+        commodity_id: id
+      };
+      this.$axios({
+        method: "delete",
+        url: "http://127.0.0.1:8000/cart/",
+        data: params,
+        headers: { Authorization: AUTH_TOKEN }
+      }).then(response => {
+        if (response.data.code == "200") {
+          goodsOptions = [];
+          this.carts = [];
+          this.getCarts();
+          this.$message({
+            type: "success",
+            message: "删除成功"
+          });
+        }
+      });
+    },
+    getCarts() {
+      let AUTH_TOKEN = window.localStorage.getItem("evil_token");
+      this.$axios({
+        method: "get",
+        url: "http://127.0.0.1:8000/cart/",
+        headers: { Authorization: AUTH_TOKEN }
+      }).then(response => {
+        // window.console.log(response.data);
+        var commodities = JSON.parse(response.data.commodities);
+        // var commodities = response.data.commodities;
+        var others = response.data.others;
+        for (var i = 0; i < commodities.length; i++) {
+          var cart = {};
+          cart.id = i;
+          cart.c_id = commodities[i].pk;
+          cart.img =
+            "http://127.0.0.1:8000/media/" + commodities[i].fields.images;
+          cart.title = commodities[i].fields.name;
+          cart.price = commodities[i].fields.price;
+          cart.count = others[i].count;
+          cart.sum = others[i].amount;
+          this.carts.push(cart);
+          goodsOptions.push(i);
+        }
+      });
     }
   },
-  beforeCreate(){
+  beforeCreate() {
     goodsOptions = [];
     this.carts = [];
   },
   mounted() {
-    let AUTH_TOKEN = window.localStorage.getItem("evil_token");
-    this.$axios({
-      method: "get",
-      url: "http://127.0.0.1:8000/cart/",
-      headers: { Authorization: AUTH_TOKEN }
-    }).then(response => {
-      // window.console.log(response.data);
-      var commodities = JSON.parse(response.data.commodities);
-      // var commodities = response.data.commodities;
-      var others = response.data.others;
-      for(var i = 0; i < commodities.length; i++){
-        var cart = {};
-        cart.id = i;
-        cart.c_id = commodities[i].pk;
-        cart.img = 'http://127.0.0.1:8000/media/' + commodities[i].fields.images;
-        cart.title = commodities[i].fields.name;
-        cart.price = commodities[i].fields.price;
-        cart.count = others[i].count;
-        cart.sum = others[i].amount;
-        this.carts.push(cart);
-        goodsOptions.push(i);
-      }
-    });
-    
+    this.getCarts();
   }
 };
 </script>
@@ -209,6 +219,10 @@ export default {
   height: 80px;
   margin-top: 20px;
   padding: 5px;
+  color: white;
+}
+.x-cart .is-checked .el-checkbox__label {
+  color: white !important;
 }
 .x-cart .cheader {
   /* border: solid 1px red; */
@@ -288,6 +302,10 @@ export default {
 .x-cart .cright .carts div:nth-child(5) {
   float: left;
   width: 4%;
+}
+.x-cart .cright .carts div:nth-child(5):hover {
+  cursor: pointer;
+  color: red;
 }
 .x-cart .hj {
   clear: both;
