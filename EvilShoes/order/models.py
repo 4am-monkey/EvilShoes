@@ -37,7 +37,7 @@ class OrderInfo(models.Model):
 
 
 class OrderGoods(models.Model):
-    name = models.CharField(verbose_name="商品名称", max_length=180)
+    name = models.CharField(verbose_name="商品名称", max_length=180, default='')
     price = models.DecimalField(verbose_name='商品价格', max_digits=6, decimal_places=2)
     # desc = models.CharField(verbose_name='描述', max_length=1000, null=True)
     count = models.IntegerField(verbose_name="数量", null=True, default=0)

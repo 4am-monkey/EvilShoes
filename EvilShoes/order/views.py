@@ -14,8 +14,8 @@ from user.views import check_login_status
 @transaction.atomic
 def order_view(request):
     user = request.user
-    conn = redis.Redis(host='127.0.0.1', port=6379, db=0)
-    cart_key = 'cart_%s' % user.username
+    # conn = redis.Redis(host='127.0.0.1', port=6379, db=0)
+    # cart_key = 'cart_%s' % user.username
     # 生成订单
     if request.method == 'POST':
         json_str = request.body
@@ -25,8 +25,8 @@ def order_view(request):
         json_obj = json.loads(json_str.decode())
         addr_id = json_obj['addr_id']
         commodities = json_obj['commodities']
-        total_price = json_obj['total_price']
-        total_count = json_obj['total_count']
+        total_price = json_obj['total_money']
+        total_count = json_obj['total_amount']
         try:
             order = OrderInfo.objects.create(user=user, addr_id=addr_id, total_count=total_count,
                                              total_price=total_price)
@@ -50,8 +50,8 @@ def order_view(request):
             # 更新库存
             com.storage -= int(count)
             com.save()
-            # 清除用户购物车中对应的记录
-            conn.hdel(cart_key, id)
+            # # 清除用户购物车中对应的记录
+            # conn.hdel(cart_key, id)
         result = {'code': 200, 'data': 'Create successfully!'}
         return JsonResponse(result)
 
@@ -62,32 +62,31 @@ def order_view(request):
         #      'commodities': [{'name': 'xxx', 'price': 1, 'count': 1}, {}, {}]}, {}, {}]
         #           }
         orders = OrderInfo.objects.filter(user=user)
-        # all_order = []
+        all_order = []
         for order in orders:
-            # o = {}
-            # o['id'] = order.id
-            # o['addr_id'] = order.addr_id
-            # o['total_amount'] = order.total_amount
-            # o['total_money'] = order.total_money
-            # o['create_time'] = order.create_time
-            # o['status'] = order.status
-            # all_goods = OrderGoods.objects.filter(order=order)
-            # # print('--------', order)
-            # o['commodities'] = []
-            # for goods in all_goods:
-            #     g = {}
-            #     g['goods_id'] = goods.goods_id
-            #     g['price'] = goods.price
-            #     g['count'] = goods.count
-            #
-            #     o['commodities'].append(g)
-            #
-            # print('===========', o['commodities'])
-            # all_order.append(o)
-            order_commodities = OrderGoods.objects.filter(order=order)
-            order.order_commodities = order_commodities
-        # result = {'code': 200, 'all_order': all_order}
-        result = {'code': 200, 'orders': orders}
+            o = {}
+            o['id'] = order.id
+            o['addr_id'] = order.addr_id
+            o['total_amount'] = order.total_count
+            o['total_money'] = order.total_price
+            o['create_time'] = order.create_time
+            o['status'] = order.status
+            all_goods = OrderGoods.objects.filter(order=order)
+            # print('--------', order)
+            o['commodities'] = []
+            for goods in all_goods:
+                g = {}
+                g['name'] = goods.name
+                g['price'] = goods.price
+                g['count'] = goods.count
+                o['commodities'].append(g)
+
+            print('===========', o['commodities'])
+            all_order.append(o)
+            # order_commodities = OrderGoods.objects.filter(order=order)
+            # order.order_commodities = order_commodities
+        result = {'code': 200, 'all_order': all_order}
+        # result = {'code': 200, 'orders': orders}
         return JsonResponse(result)
 
     # 删除订单
