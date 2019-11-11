@@ -17,7 +17,7 @@
           <div class="btn">
             <el-button type="primary" @click="buy">立即购买</el-button>
             <el-button type="primary" icon="el-icon-shopping-cart-2" @click="addCart">加入购物车</el-button>
-            <el-button type="primary" icon="el-icon-star-off">收藏</el-button>
+            <el-button type="primary" icon="el-icon-star-off" @click="collect(commodity.id)">收藏</el-button>
           </div>
         </div>
       </el-col>
@@ -61,6 +61,28 @@ export default {
     },
     buy(){
       this.$router.push({path: '/order/' + this.c_id + '_' + this.num});
+    },
+    collect(cmd_id){
+      // window.console.log(id)
+      let AUTH_TOKEN = window.localStorage.getItem('evil_token')
+      let c_id = cmd_id;
+      let params = {id: c_id}
+      this.$axios({
+        method:"post",
+        url:"http://127.0.0.1:8000/favourite/",
+        headers:{Authorization: AUTH_TOKEN},
+        data: params
+      })
+      .then(res=>{
+        if(res.data.data == 200){
+          this.$message({
+            type: 'success',
+            message:'添加收藏成功'
+          })
+        }else{
+          window.console.log('添加失败')
+        }
+      })
     },
     addCart(){
       var AUTH_TOKEN = window.localStorage.getItem('evil_token');
