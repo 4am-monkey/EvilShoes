@@ -15,7 +15,7 @@ from user.views import check_login_status
 def favourite_view(request):
     user = request.user
     if request.method == 'GET':
-        all_favourite = Favourite.objects.filter(user=user.username)
+        all_favourite = Favourite.objects.filter(user=user)
         data = []
         for fav in all_favourite:
             f = {}
