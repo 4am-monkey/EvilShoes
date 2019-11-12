@@ -3,14 +3,16 @@ import redis
 from django.http import JsonResponse
 from django.db import transaction
 from django.shortcuts import render
+from django.conf import settings
+import os
 
 # Create your views here.
 from commodity.models import CommodityInfo
 from order.models import OrderInfo, OrderGoods
 from user.models import ReceiverInfo
 from user.views import check_login_status
-
 from django.core import serializers
+from alipay import AliPay
 
 
 # @transaction
@@ -94,3 +96,50 @@ def order_view(request):
     elif request.method == 'DELETE':
         # 拿orderID
         pass
+
+
+# 订单支付
+@check_login_status
+def order_pay_view(request):
+    user = request.user
+    if request.method != 'POST':
+        result = {'code': 40103, 'error': 'Please use post!'}
+        return JsonResponse(result)
+    json_str = request.body
+    if not json_str:
+        result = {'code': 40104, 'error': 'Please give me data!'}
+        return JsonResponse(result)
+    json_obj = json.loads(json_str.decode())
+    order_id = json_obj.get('order_id')
+    if not order_id:
+        result = {'code': 40105, 'error': 'Please give me order_id!'}
+        return JsonResponse(result)
+    try:
+        order = OrderInfo.objects.get(id=order_id, user=user, status=0)
+    except OrderInfo.DoesNotExist:
+        result = {'code': 40106, 'error': '订单不存在！'}
+        return JsonResponse(result)
+    # 初始化
+    alipay = AliPay(
+        appid="2016101700705616",
+        app_notify_url=None,  # 默认回调url
+        app_private_key_string=os.path.join(settings.BASE_DIR, 'order/app_private_key.pem'),
+        # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥,
+        alipay_public_key_string=os.path.join(settings.BASE_DIR, 'order/app_public_key.pem'),
+        sign_type="RSA2",  # RSA 或者 RSA2
+        debug=True  # 默认False
+    )
+
+    total_price = order.total_price
+    # 调用支付宝接口
+    # 电脑网站支付，需要跳转到https://openapi.alipay.com/gateway.do? + order_string
+    order_string = alipay.api_alipay_trade_page_pay(
+        out_trade_no=order_id,
+        total_amount=str(total_price),
+        subject='潮鞋order_%d' % order_id,
+        return_url=None,
+        notify_url=None  # 可选, 不填则使用默认notify url
+    )
+    pay_url = 'https://openapi.alipay.com/gateway.do?' + order_string
+    result = {'code': 200, 'pay_url': pay_url}
+    return JsonResponse(result)
