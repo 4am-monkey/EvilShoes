@@ -1,6 +1,8 @@
 from django.shortcuts import render
 import json
 from django.http import JsonResponse
+
+from commodity.models import CommodityInfo
 from .models import *
 from user.views import check_login_status
 
@@ -13,7 +15,7 @@ from user.views import check_login_status
 def favourite_view(request):
     user = request.user
     if request.method == 'GET':
-        all_favourite = Favourite.objects.filter(user=user.username)
+        all_favourite = Favourite.objects.filter(user=user)
         data = []
         for fav in all_favourite:
             f = {}
@@ -35,25 +37,18 @@ def favourite_view(request):
         # 转python
         json_obj = json.loads(json_str.decode())
         id = json_obj['id']
-        name = json_obj['name']
-        description = json_obj['description']
-        images = str(json_obj['images'])
-        # 判断
         if not id:
             result = {'code': 50202, 'data': 'Please give me id'}
             return JsonResponse(result)
-        if not name:
-            result = {'code': 50203, 'data': 'Please give me name'}
-            return JsonResponse(result)
-        if not description:
-            result = {'code': 50204, 'data': 'Please give me description'}
-            return JsonResponse(result)
-        if not images:
-            result = {'code': 50205, 'data': 'Please give me images'}
-            return JsonResponse(result)
         try:
-            Favourite.objects.create(id=id, name=name, description=description,
-                                     images=images, user=user.username)
+            good = CommodityInfo.objects.get(id=id)
+        except Exception as e:
+            result = {'code': 50203, 'data': 'commodity not found'}
+            return JsonResponse(result)
+        # 判断
+        try:
+            Favourite.objects.create(id=id, name=good.name, description=good.description,
+                                     images=good.images, user=user)
         except Exception as e:
             print('create error!')
             print(e)
