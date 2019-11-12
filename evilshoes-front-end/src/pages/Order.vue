@@ -41,7 +41,7 @@
     <el-table ref="multipleTable" :data="goodsInfo" tooltip-effect="dark" style="width: 93%" border>
       <el-table-column label="商品" width="558">
         <template slot-scope="scope">
-          <img :src="'http:127.0.0.1:8000/media/' + scope.row.img" alt />
+          <img :src="scope.row.img" alt />
           <span>{{ scope.row.title }}</span>
         </template>
       </el-table-column>
@@ -166,7 +166,7 @@ export default {
           for (var m = 0; m < goods.length; m++) {
             var commodity = {};
             commodity.id = goods[m].id;
-            commodity.img = goods[m].images;
+            commodity.img = 'http:127.0.0.1:8000/media/' + goods[m].images;
             commodity.title = goods[m].name;
             commodity.price = goods[m].price;
             commodity.count = commodities_count[m];
@@ -224,6 +224,20 @@ export default {
           this.$message({
             type: "success",
             message: "添加订单成功"
+          });
+          var params2 = {
+            'order_id': response.data.data.order_id,
+          }
+          this.$axios({
+            method: 'post',
+            url: 'http://127.0.0.1:8000/order/pay',
+            data: params2,
+            headers: { Authorization: AUTH_TOKEN }
+          }).then(response => {
+            if(response.data.code == '200'){
+              var pay_url = response.data.pay_url;
+              window.location.href = pay_url;
+            }
           });
         }
       });

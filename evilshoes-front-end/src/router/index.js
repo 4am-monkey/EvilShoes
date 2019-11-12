@@ -15,6 +15,8 @@ import Cart from "@/pages/Cart.vue"
 import Order from "@/pages/Order.vue"
 import Search from "@/pages/Search.vue"
 
+import Header2 from "@/components/Header2.vue"
+
 
 Vue.use(Router)
 
@@ -100,12 +102,18 @@ export default new Router({
     },
     // 搜索
     {
-      'path': '/search/:key',
+      path: '/search/:key',
       component: Search,
       name: '搜索',
       meta: {
         title: '邪 | 搜索'
       }
+    },
+    // 测试
+    {
+      path: '/test',
+      component: Header2,
+      name: '测试'
     }
   ],
   mode: "history"

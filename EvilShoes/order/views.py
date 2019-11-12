@@ -19,7 +19,7 @@ from alipay import AliPay
 @check_login_status
 def order_view(request):
     user = request.user
-    conn = redis.Redis(host='127.0.0.1', port=6379, db=0)
+    conn = redis.Redis(host='127.0.0.1', port=6379, db=0, password='123456')
     cart_key = 'cart_%s' % user.username
     # 生成订单
     if request.method == 'POST':
@@ -35,6 +35,7 @@ def order_view(request):
         try:
             order = OrderInfo.objects.create(user=user, addr_id=addr_id, total_count=total_count,
                                              total_price=total_price)
+            order_id = order.id
         except Exception as e:
             print(e)
             print('create error!')
@@ -57,7 +58,7 @@ def order_view(request):
             com.save()
             # 清除用户购物车中对应的记录
             conn.hdel(cart_key, id)
-        result = {'code': 200, 'data': 'Create successfully!'}
+        result = {'code': 200, 'data': {'order_id': order_id}}
         return JsonResponse(result)
 
     # 查看订单
