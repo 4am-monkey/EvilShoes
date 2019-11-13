@@ -19,8 +19,8 @@ from alipay import AliPay
 @check_login_status
 def order_view(request):
     user = request.user
-    conn = redis.Redis(host='127.0.0.1', port=6379, db=0, password='123456')
-    # conn = redis.Redis(host='127.0.0.1', port=6379, db=0)
+    # conn = redis.Redis(host='127.0.0.1', port=6379, db=0, password='123456')
+    conn = redis.Redis(host='127.0.0.1', port=6379, db=0)
     cart_key = 'cart_%s' % user.username
     # 生成订单
     if request.method == 'POST':
@@ -51,6 +51,9 @@ def order_view(request):
                 com = CommodityInfo.objects.get(id=id)
             except CommodityInfo.DoesNotExist:
                 result = {'code': 40102, 'error': '商品不存在!'}
+                return JsonResponse(result)
+            if int(count) > com.storage:
+                result = {'code': 40103, 'error': '商品库存不足！'}
                 return JsonResponse(result)
             commodity_name = com.name
             OrderGoods.objects.create(order=order, name=commodity_name, count=count, price=price)
@@ -105,21 +108,21 @@ def order_view(request):
 def order_pay_view(request):
     user = request.user
     if request.method != 'POST':
-        result = {'code': 40103, 'error': 'Please use post!'}
+        result = {'code': 40104, 'error': 'Please use post!'}
         return JsonResponse(result)
     json_str = request.body
     if not json_str:
-        result = {'code': 40104, 'error': 'Please give me data!'}
+        result = {'code': 40105, 'error': 'Please give me data!'}
         return JsonResponse(result)
     json_obj = json.loads(json_str.decode())
     order_id = json_obj.get('order_id')
     if not order_id:
-        result = {'code': 40105, 'error': 'Please give me order_id!'}
+        result = {'code': 40106, 'error': 'Please give me order_id!'}
         return JsonResponse(result)
     try:
         order = OrderInfo.objects.get(id=order_id, user=user, status=0)
     except OrderInfo.DoesNotExist:
-        result = {'code': 40106, 'error': '订单不存在！'}
+        result = {'code': 40107, 'error': '订单不存在！'}
         return JsonResponse(result)
     # 初始化
     alipay = AliPay(
@@ -156,23 +159,23 @@ def order_pay_view(request):
 def check_pay_view(request):
     user = request.user
     if request.method != 'POST':
-        result = {'code': 40107, 'error': 'Please use post!'}
+        result = {'code': 40108, 'error': 'Please use post!'}
         return JsonResponse(result)
     json_str = request.body
     if not json_str:
-        result = {'code': 40108, 'error': 'Please give me data!'}
+        result = {'code': 40109, 'error': 'Please give me data!'}
         return JsonResponse(result)
     json_obj = json.loads(json_str.decode())
     # 接收参数
     order_id = json_obj.get("order_id")
     # 校验参数
     if not order_id:
-        result = {'code': 40109, 'error': 'Please give me order_id!'}
+        result = {'code': 40110, 'error': 'Please give me order_id!'}
         return JsonResponse(result)
     try:
         order = OrderInfo.objects.get(order_id=order_id, user=user, order_status=0)
     except OrderInfo.DoesNotExist:
-        return JsonResponse({"res": 2, "errmsg": "订单错误"})
+        return JsonResponse({"code": 40111, "error": "订单错误"})
 
     # 初始化
     alipay = AliPay(
@@ -197,7 +200,7 @@ def check_pay_view(request):
             order.trade_no = trade_no
             order.order_status = 4  # 待评价
             order.save()
-            return JsonResponse({"res": 3, "message": "支付成功"})
+            return JsonResponse({"code": 200, "message": "支付成功"})
         # 返回码为40004 或 交易状态为等待买家付款
         elif code == "40004" or (response.get("trade_status") == "WAIT_BUYER_PAY"):
             # 等待买家付款
@@ -207,4 +210,4 @@ def check_pay_view(request):
             continue
         else:
             # 支付出错
-            return JsonResponse({"res": 4, "errmsg": "支付失败"})
+            return JsonResponse({"code": 40112, "error": "支付失败"})
