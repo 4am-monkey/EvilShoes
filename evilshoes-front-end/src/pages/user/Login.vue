@@ -62,15 +62,16 @@
             }).then((response) => {
               // window.console.log(response.data);
               if(response.data.code == 200){
-                this.$message({
-                  message: '登录成功',
-                  type: 'success'
-                });
+                // this.$message({
+                //   message: '登录成功',
+                //   type: 'success'
+                // });
                 window.localStorage.setItem('evil_token', response.data.data.token);
                 window.localStorage.setItem('evil_nickname', response.data.nickname);
                 window.localStorage.setItem('evil_username', response.data.username);
                 this.$router.push({ path: '/'})
                 this.$router.go(0);
+                // this.$router.go(-1);
             }else{
               if(response.data.code == 10204){
                 this.$message.error('用户名或密码错误！');

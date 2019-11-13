@@ -63,7 +63,8 @@ export default {
       goods: goodsOptions,
       isIndeterminate: false,
       carts: [],
-      total_price: (0).toFixed(2)
+      total_price: (0).toFixed(2),
+      // maxkc: 0
     };
   },
 
@@ -108,7 +109,12 @@ export default {
           this.countSum();
         } else if (response.data.code == "30105") {
           //
-          window.console.log("库存不足！");
+          // window.console.log("库存不足！");
+          this.$message({
+            type: 'error',
+            message: '库存不足'
+          });
+          this.carts[value].count -= 1;
         }
       });
     },

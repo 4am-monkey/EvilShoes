@@ -19,8 +19,8 @@ from alipay import AliPay
 @check_login_status
 def order_view(request):
     user = request.user
-    # conn = redis.Redis(host='127.0.0.1', port=6379, db=0, password='123456')
-    conn = redis.Redis(host='127.0.0.1', port=6379, db=0)
+    conn = redis.Redis(host='127.0.0.1', port=6379, db=0, password='123456')
+    # conn = redis.Redis(host='127.0.0.1', port=6379, db=0)
     cart_key = 'cart_%s' % user.username
     # 生成订单
     if request.method == 'POST':

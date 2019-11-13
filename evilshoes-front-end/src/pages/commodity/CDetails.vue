@@ -14,6 +14,10 @@
           <div class="count">
             <span>数量</span><el-input-number v-model="num" controls-position="right" @blur="handleBlur" :min="1" :max="10"></el-input-number>
           </div>
+          <div class="dprice">
+            <span>库存</span>
+            <span style="color: rgb(90, 89, 89); font-size: 14px;">{{ commodity.storage }}</span>
+          </div>
           <div class="btn">
             <el-button type="primary" @click="buy">立即购买</el-button>
             <el-button type="primary" icon="el-icon-shopping-cart-2" @click="addCart">加入购物车</el-button>
@@ -60,7 +64,19 @@ export default {
       this.$router.go(-1)
     },
     buy(){
-      this.$router.push({path: '/order/' + this.c_id + '_' + this.num});
+      var AUTH_TOKEN = window.localStorage.getItem('evil_token');
+      this.$axios({
+        method: "get",
+        url: "http://127.0.0.1:8000/user/checklogin",
+        headers: { Authorization: AUTH_TOKEN }
+      }).then(response => {
+        // window.console.log(response.data);
+        if (response.data.code == 200) {
+          this.$router.push({path: '/order/' + this.c_id + '_' + this.num});
+        } else {
+          this.$router.push({path: '/login'});
+        }
+      });
     },
     collect(cmd_id){
       // window.console.log(id)
@@ -102,7 +118,14 @@ export default {
             message: '成功添加' + this.num + '件商品'
           });
         }else if(response.data.code == '30114'){
-          window.console.log('库存不足')
+          // window.console.log('库存不足')
+          this.$message({
+            type: 'error',
+            message: '库存不足，添加购物车失败'
+          });
+          
+        }else{
+          this.$router.push({path: '/login'});
         }
       });
     },

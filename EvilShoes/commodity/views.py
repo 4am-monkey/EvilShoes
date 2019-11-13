@@ -92,6 +92,7 @@ def commodity_details(request, commodityid):
             'shelves': commodity.shelves,
             'price': str(commodity.price),
             'image': str(commodity.images),
+            'storage': commodity.storage,
         }
         # if not data:
         #     result = {'code': 20103, 'data': 'Please give me data'}
