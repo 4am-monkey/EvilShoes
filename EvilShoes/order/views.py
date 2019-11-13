@@ -130,7 +130,6 @@ def order_pay_view(request):
         sign_type="RSA2",  # RSA 或者 RSA2
         debug=True  # 默认False
     )
-
     total_price = order.total_price
     # 调用支付宝接口
     # 电脑网站支付，需要跳转到https://openapi.alipay.com/gateway.do? + order_string
