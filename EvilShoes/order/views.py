@@ -19,7 +19,8 @@ from alipay import AliPay
 @check_login_status
 def order_view(request):
     user = request.user
-    conn = redis.Redis(host='127.0.0.1', port=6379, db=0, password='123456')
+    # conn = redis.Redis(host='127.0.0.1', port=6379, db=0, password='123456')
+    conn = redis.Redis(host='127.0.0.1', port=6379, db=0)
     cart_key = 'cart_%s' % user.username
     # 生成订单
     if request.method == 'POST':
@@ -124,9 +125,11 @@ def order_pay_view(request):
     alipay = AliPay(
         appid="2016101700705616",
         app_notify_url=None,  # 默认回调url
-        app_private_key_string=os.path.join(settings.BASE_DIR, 'order/app_private_key.pem'),
+        # app_private_key_string=os.path.join(settings.BASE_DIR, '/order/app_private_key.pem'),
+        app_private_key_string=open("/home/python/zero/EvilShoes/EvilShoes/order/app_private_key.pem").read(),
         # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥,
-        alipay_public_key_string=os.path.join(settings.BASE_DIR, 'order/app_public_key.pem'),
+        # alipay_public_key_string=os.path.join(settings.BASE_DIR, '/order/app_public_key.pem'),
+        alipay_public_key_string=open("/home/python/zero/EvilShoes/EvilShoes/order/app_public_key.pem").read(),
         sign_type="RSA2",  # RSA 或者 RSA2
         debug=True  # 默认False
     )
@@ -143,3 +146,65 @@ def order_pay_view(request):
     pay_url = 'https://openapi.alipay.com/gateway.do?' + order_string
     result = {'code': 200, 'pay_url': pay_url}
     return JsonResponse(result)
+
+
+# 查看订单支付的结果
+# ajax post
+# 前端传递参数：订单id(order_id)
+# /order/check
+@check_login_status
+def check_pay_view(request):
+    user = request.user
+    if request.method != 'POST':
+        result = {'code': 40107, 'error': 'Please use post!'}
+        return JsonResponse(result)
+    json_str = request.body
+    if not json_str:
+        result = {'code': 40108, 'error': 'Please give me data!'}
+        return JsonResponse(result)
+    json_obj = json.loads(json_str.decode())
+    # 接收参数
+    order_id = json_obj.get("order_id")
+    # 校验参数
+    if not order_id:
+        result = {'code': 40109, 'error': 'Please give me order_id!'}
+        return JsonResponse(result)
+    try:
+        order = OrderInfo.objects.get(order_id=order_id, user=user, order_status=0)
+    except OrderInfo.DoesNotExist:
+        return JsonResponse({"res": 2, "errmsg": "订单错误"})
+
+    # 初始化
+    alipay = AliPay(
+        appid="2016101700705616",
+        app_notify_url=None,  # 默认回调url
+        app_private_key_string=os.path.join(settings.BASE_DIR, 'order/app_private_key.pem'),
+        # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥,
+        alipay_public_key_string=os.path.join(settings.BASE_DIR, 'order/app_public_key.pem'),
+        sign_type="RSA2",  # RSA 或者 RSA2
+        debug=True  # 默认False
+    )
+
+    while True:
+        response = alipay.api_alipay_trade_query(order_id)
+        code = response.get("code")
+        # 如果返回码为10000和交易状态为交易支付成功
+        if code == "10000" and response.get("trade_status") == "TRADE_SUCCESS":
+            # 支付成功
+            # 获取支付宝交易号
+            trade_no = response.get("trade_no")
+            # 更新订单状态
+            order.trade_no = trade_no
+            order.order_status = 4  # 待评价
+            order.save()
+            return JsonResponse({"res": 3, "message": "支付成功"})
+        # 返回码为40004 或 交易状态为等待买家付款
+        elif code == "40004" or (response.get("trade_status") == "WAIT_BUYER_PAY"):
+            # 等待买家付款
+            # 业务处理失败，可能一会就会成功
+            import time
+            time.sleep(5)
+            continue
+        else:
+            # 支付出错
+            return JsonResponse({"res": 4, "errmsg": "支付失败"})
