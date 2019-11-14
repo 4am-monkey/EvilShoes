@@ -131,7 +131,7 @@ export default {
             }
           }
         } else {
-          this.$router.push('/login');
+          this.$router.push("/login");
         }
       });
     },
@@ -166,7 +166,7 @@ export default {
           for (var m = 0; m < goods.length; m++) {
             var commodity = {};
             commodity.id = goods[m].id;
-            commodity.img = 'http:127.0.0.1:8000/media/' + goods[m].images;
+            commodity.img = "http:127.0.0.1:8000/media/" + goods[m].images;
             commodity.title = goods[m].name;
             commodity.price = goods[m].price;
             commodity.count = commodities_count[m];
@@ -226,18 +226,23 @@ export default {
             message: "添加订单成功"
           });
           var params2 = {
-            'order_id': response.data.data.order_id,
-          }
+            order_id: response.data.data.order_id
+          };
           this.$axios({
-            method: 'post',
-            url: 'http://127.0.0.1:8000/order/pay',
+            method: "post",
+            url: "http://127.0.0.1:8000/order/pay",
             data: params2,
             headers: { Authorization: AUTH_TOKEN }
           }).then(response => {
-            if(response.data.code == '200'){
+            if (response.data.code == "200") {
               var pay_url = response.data.pay_url;
               window.location.href = pay_url;
             }
+          });
+        } else if (response.data.code == "40103") {
+          this.$message({
+            type: "error",
+            message: "库存不足！提交订单失败"
           });
         }
       });
