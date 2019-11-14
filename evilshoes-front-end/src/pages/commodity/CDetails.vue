@@ -82,7 +82,7 @@ export default {
       // window.console.log(id)
       let AUTH_TOKEN = window.localStorage.getItem('evil_token')
       let c_id = cmd_id;
-      let params = {id: c_id}
+      let params = {commodity_id: c_id}
       this.$axios({
         method:"post",
         url:"http://127.0.0.1:8000/favourite/",
@@ -90,13 +90,17 @@ export default {
         data: params
       })
       .then(res=>{
-        if(res.data.data == 200){
+        if(res.data.code == 200){
           this.$message({
             type: 'success',
             message:'添加收藏成功'
           })
         }else{
-          window.console.log('添加失败')
+          // window.console.log('添加失败')
+          this.message({
+            type:'error',
+            message:'添加收藏失败'
+          })
         }
       })
     },
