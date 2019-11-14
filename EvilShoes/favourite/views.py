@@ -15,7 +15,7 @@ import redis
 @check_login_status
 def favourite_view(request):
     user = request.user
-    conn = redis.Redis(host='127.0.0.1', port=6379, db=0)
+    conn = redis.Redis(host='127.0.0.1', port=6379, db=1)
     fav_key = 'fav_%s' % user.username
 
     # # 查看收藏商品--mysql
