@@ -1,0 +1,17 @@
+asgiref==3.2.5
+cffi==1.14.0
+cryptography==2.8
+Django==1.11.8
+django-alipay==0.1
+django-cors-headers==3.2.1
+Pillow==7.0.0
+pycparser==2.20
+pycryptodomex==3.9.4
+PyJWT==1.7.1
+PyMySQL==0.9.3
+pyOpenSSL==19.1.0
+python-alipay-sdk==2.0.1
+pytz==2019.3
+redis==3.4.1
+six==1.14.0
+sqlparse==0.3.1
