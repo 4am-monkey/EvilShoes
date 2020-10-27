@@ -1,6 +1,6 @@
 asgiref==3.2.5
 cffi==1.14.0
-cryptography==2.8
+cryptography==3.2
 Django==1.11.8
 django-alipay==0.1
 django-cors-headers==3.2.1
