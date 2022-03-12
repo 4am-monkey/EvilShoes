@@ -4,7 +4,7 @@ cryptography==2.8
 Django==1.11.8
 django-alipay==0.1
 django-cors-headers==3.2.1
-Pillow==7.0.0
+Pillow==9.0.1
 pycparser==2.20
 pycryptodomex==3.9.4
 PyJWT==1.7.1
